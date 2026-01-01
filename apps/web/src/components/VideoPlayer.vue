@@ -6,7 +6,7 @@ import { authApi } from '@/lib/api'
 import { formatSeconds, getImage, supportsPiP } from '@/lib/utils'
 import { usePlayerStore } from '@/stores/player'
 import { Media } from '@hls-app/sdk'
-import Hls, { Level } from 'hls.js'
+import Hls, { type Level } from 'hls.js'
 import {
   Maximize,
   MoveLeft,
@@ -33,8 +33,8 @@ const { media } = defineProps<{ media: Media }>()
 
 const loaded = ref(false)
 const qualities = ref<Level[]>([])
+const currentQuality = ref<number>(0)
 const volume = ref([parseFloat(localStorage.getItem('volume') ?? '1')])
-const currentQuality = ref(0)
 const duration = ref(0)
 const currentTime = ref(parseFloat(localStorage.getItem(`currentTime_${media.id}`) ?? '0'))
 const buffered = ref(0)
@@ -76,10 +76,6 @@ const url = computed(() => {
   else return ''
 })
 
-function setQuality(level: number) {
-  hls.currentLevel = level
-}
-
 function getSeekPercent(event: MouseEvent) {
   const el = event.currentTarget as HTMLElement
   const rect = el.getBoundingClientRect()
@@ -91,7 +87,8 @@ function onSeek(event: MouseEvent) {
   if (!player.value || !duration.value) return
   const percent = getSeekPercent(event)
   const seekTime = (percent / 100) * duration.value
-  playerStore.seek(seekTime)
+  player.value!.currentTime = seekTime
+  // playerStore.seek(seekTime)
 }
 
 function onHover(event: MouseEvent) {
@@ -118,6 +115,31 @@ function fullscreen() {
   } else {
     videoContainer.requestFullscreen()
   }
+}
+
+function getQualityName(level: number) {
+  if (level === -1) return 'Auto'
+  const theLevel = qualities.value.at(level)
+  if (!theLevel) return 'Unknown'
+  if (theLevel.url.some((url) => url.includes('SOURCE'))) return 'Source'
+  else return `${theLevel.height}p`
+}
+
+function setQuality(level: number) {
+  if (!qualities.value) return
+
+  if (level == -1) {
+    // Auto selected
+    currentQuality.value = level
+    hls.currentLevel = level
+    return
+  }
+
+  const newLevel = qualities.value.at(level)
+  if (!newLevel) return
+
+  currentQuality.value = level
+  hls.currentLevel = level
 }
 
 function pictureInPicture() {
@@ -170,6 +192,8 @@ function start() {
 
   if (Hls.isSupported()) {
     hls = new Hls({
+      // SOURCE by default
+      startLevel: 0,
       fragLoadingMaxRetry: 5,
       fragLoadingRetryDelay: 1000,
       fragLoadingTimeOut: 20_000,
@@ -191,18 +215,14 @@ function start() {
       sessionStorage.setItem('hls_token', hlsToken)
       console.log('loaded')
     })
+    hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+      qualities.value = data.levels
+      setQuality(0)
+      // Set currentTime
+      if (player.value) player.value.currentTime = currentTime.value
+    })
 
     hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-      hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-        hls.currentLevel = 0
-        hls.nextLevel = 0
-        hls.loadLevel = 0
-        qualities.value = data.levels
-        currentQuality.value = hls.currentLevel
-        // Set currentTime
-        if (player.value) player.value.currentTime = currentTime.value
-      })
-
       hls.loadSource(url.value)
     })
     hls.on(Hls.Events.LEVEL_LOADED, () => {
@@ -399,11 +419,26 @@ onBeforeUnmount(() => {
             :side-offset="10"
           >
             <span
-              v-for="quality of qualities"
-              :key="quality.id"
               class="truncate text-sm p-1 px-2 rounded-xs text-white cursor-pointer hover:bg-muted/20"
+              :class="{
+                'bg-muted/30': currentQuality === -1,
+                'hover:bg-muted/20': currentQuality === -1,
+              }"
+              @click="() => setQuality(-1)"
             >
-              {{ quality.height }}p
+              {{ getQualityName(-1) }}
+            </span>
+            <span
+              v-for="(quality, index) of qualities"
+              :key="quality.id"
+              class="truncate text-sm p-1 px-2 rounded-xs text-white cursor-pointer duration-150"
+              :class="{
+                'bg-muted/30': currentQuality === index,
+                'hover:bg-muted/20': currentQuality === index,
+              }"
+              @click="() => setQuality(index)"
+            >
+              {{ getQualityName(index) }}
             </span>
           </PopoverContent>
         </Popover>
