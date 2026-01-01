@@ -38,6 +38,7 @@ public class GlobalControllerExceptionHandler {
 
   private ResponseEntity<ErrorResponse> build(int statusCode, Exception ex, HttpServletRequest req) {
     return ResponseEntity.status(statusCode)
+        .header("Content-Type", "application/json")
         .body(ErrorResponse.builder()
             .error(ex.getClass().getSimpleName())
             .status(statusCode)
