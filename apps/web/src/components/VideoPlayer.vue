@@ -13,6 +13,8 @@ import {
   PauseIcon,
   PictureInPicture2,
   PlayIcon,
+  RotateCcw,
+  RotateCw,
   SlidersVertical,
   Volume,
   Volume1,
@@ -89,6 +91,16 @@ function onSeek(event: MouseEvent) {
   const seekTime = (percent / 100) * duration.value
   player.value!.currentTime = seekTime
   // playerStore.seek(seekTime)
+}
+
+function forwards() {
+  const time = player.value!.currentTime ?? 0
+  player.value!.currentTime = Math.min(duration.value, time + 15)
+}
+
+function backwards() {
+  const time = player.value!.currentTime ?? 0
+  player.value!.currentTime = Math.max(0, time - 15)
 }
 
 function onHover(event: MouseEvent) {
@@ -308,12 +320,20 @@ onBeforeUnmount(() => {
     <!-- Play/Pause/jump forwards-backwards -->
     <div
       v-if="loaded"
-      class="play-pause show-hover-paused absolute flex left-1/2 top-1/2 -translate-1/2"
+      class="play-pause show-hover-paused absolute flex items-center gap-2 left-1/2 top-1/2 -translate-1/2"
     >
       <Button
         variant="ghost"
+        size="icon-sm"
+        class="cursor-pointer hover:bg-muted/10 rounded-full"
+        @click="backwards"
+      >
+        <RotateCcw color="white" />
+      </Button>
+      <Button
+        variant="ghost"
         style="height: 48px; width: 48px"
-        class="cursor-pointer rounded-full flex justify-center hover:bg-transparent"
+        class="cursor-pointer rounded-full flex justify-center hover:bg-muted/10"
         @click="playPauseToggle"
       >
         <PlayIcon
@@ -330,6 +350,14 @@ onBeforeUnmount(() => {
           fill="white"
           stroke-opacity="0"
         />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        class="cursor-pointer hover:bg-muted/10 rounded-full"
+        @click="forwards"
+      >
+        <RotateCw color="white" />
       </Button>
     </div>
 
