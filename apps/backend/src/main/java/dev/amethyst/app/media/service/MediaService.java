@@ -117,7 +117,7 @@ public class MediaService extends AbstractCrudService<Media, String, MediaReposi
     }
 
     // Establish relationships
-    season.setTvSeries(series);
+    this.tvSeriesService.addTvSeasonToTvSeries(season.getId(), series.getId());
     media.setTvSeason(season);
     this.save(media);
   }

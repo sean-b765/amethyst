@@ -17,6 +17,8 @@ public interface TvSeasonRepository extends JpaRepository<TvSeason, String> {
 
   public Optional<TvSeason> findByTvSeriesIdAndSeason(String tvSeriesId, Integer season);
 
+  public List<TvSeason> findByTvSeriesId(String tvSeriesId);
+
   @Query("SELECT m FROM Media m WHERE m.tvSeason.id = :seasonId")
   public List<Media> findMedia(@Param("seasonId") String seasonId);
 }
