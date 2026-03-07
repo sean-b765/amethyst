@@ -56,8 +56,6 @@ public class TranscodingService {
   private final long segmentCountLimit = 8;
 
   private final String baseVideoArgs = "-preset superfast ";
-  private final String constantFramerateArgs = "-bf 0 -fps_mode cfr -sc_threshold:v:0 0 -r %s ";
-  private final String forcePixelFormatArgs = "-pix_fmt yuv420p ";
   private final String videoCodecArgs = "-codec:v libx264 ";
   private final String keepVideoCodecArgs = "-codec:v copy ";
   private final String audioCodecArgs = "-codec:a aac ";
@@ -69,6 +67,8 @@ public class TranscodingService {
   private final String x264Args = "-x264opts:0 \"no-scenecut=1:subme=0:me_range=16:rc_lookahead=0:me=hex:open_gop=0\" ";
   private final String gopArgs = "-force_key_frames \"expr:gte(t,n_forced*" +
       String.valueOf(this.segmentLength) + ")\" -g:v:0 %s -keyint_min:v:0 %s ";
+  private final String constantFramerateArgs = "-bf 0 -fps_mode cfr -sc_threshold:v:0 0 -r %s ";
+  private final String forcePixelFormatArgs = "-pix_fmt yuv420p ";
   private final String startNumberArg = "-start_number %s -ss %s ";
 
   @Autowired
@@ -112,6 +112,10 @@ public class TranscodingService {
         argsBuilder.append(this.videoCodecArgs);
         // argsBuilder.append(this.x264Args);
         break;
+      case REMUX:
+        argsBuilder.append(this.keepVideoCodecArgs);
+        argsBuilder.append(this.keepAudioCodecArgs);
+        break;
     }
 
     return argsBuilder.toString();
@@ -130,6 +134,9 @@ public class TranscodingService {
     switch (compatibility) {
       case TRANSCODE_AUDIO:
         argsBuilder.append(this.audioCodecArgs);
+        break;
+      case REMUX:
+        argsBuilder.append(this.keepAudioCodecArgs);
         break;
     }
 
