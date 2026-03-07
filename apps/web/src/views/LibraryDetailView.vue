@@ -15,14 +15,24 @@ const libraryStore = useLibraryStore()
 const { movies, series, selectedLibrary } = storeToRefs(libraryStore)
 const router = useRouter()
 
-function clickMedia(id: string | undefined) {
+function getMovieHref(id: string | undefined) {
   if (id === undefined) return
-  router.push({
+  return router.resolve({
     name: 'WatchMedia',
     params: {
       mediaId: id,
     },
-  })
+  }).href
+}
+
+function getTvSeriesHref(id: string | undefined) {
+  if (id === undefined) return
+  return router.resolve({
+    name: 'TvSeries',
+    params: {
+      tvSeriesId: id,
+    },
+  }).href
 }
 </script>
 
@@ -40,9 +50,7 @@ function clickMedia(id: string | undefined) {
         </EmptyHeader>
         <EmptyContent>
           The library you requested was not found.
-          <RouterLink to="/libraries">
-            <Button variant="link"> Go back </Button>
-          </RouterLink>
+          <Button variant="link" @click="() => router.back()"> Go back </Button>
         </EmptyContent>
       </Empty>
     </template>
@@ -56,7 +64,7 @@ function clickMedia(id: string | undefined) {
           :name="m.info?.name"
           :thumbnail="m.info?.thumbnail"
           :release-date="m.info?.releaseDate"
-          @click="() => clickMedia(m.id)"
+          :href="getMovieHref(m.id)"
         />
         <MediaCard
           v-for="s of series"
@@ -65,6 +73,7 @@ function clickMedia(id: string | undefined) {
           :name="s.name"
           :thumbnail="s.thumbnail"
           :release-date="s.releaseDate"
+          :href="getTvSeriesHref(s.id)"
         />
       </template>
       <HoverCard v-else @click="() => libraryStore.scan(selectedLibrary!.id)">

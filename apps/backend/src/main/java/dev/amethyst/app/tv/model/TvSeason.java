@@ -52,7 +52,7 @@ public class TvSeason extends AbstractBaseEntity {
 
   @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "tvSeriesId", referencedColumnName = "id")
-  @JsonManagedReference
+  @JsonBackReference
   private TvSeries tvSeries;
 
   @OneToMany(mappedBy = "tvSeason")

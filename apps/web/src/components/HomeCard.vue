@@ -15,18 +15,17 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { getImage } from '@/lib/utils'
-import { useColorMode } from '@vueuse/core'
+import { type MediaInfo } from '@hls-app/sdk'
 import { truncate } from 'lodash'
 import moment from 'moment'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 
-const { name, releaseDate, description, banner } = defineProps<{
-  id?: string
-  releaseDate?: string
-  name?: string
-  description?: string
-  banner?: string
-}>()
-const mode = useColorMode()
+const { id, name, releaseDate, description, banner } = defineProps<Partial<MediaInfo>>()
+const router = useRouter()
+const link = computed(() => {
+  return router.resolve({ name: 'WatchMedia', params: { mediaId: id } }).href
+})
 </script>
 
 <template>
@@ -38,7 +37,7 @@ const mode = useColorMode()
       class="banner w-full h-full z-0 rounded-lg scale-105"
       :style="{ backgroundImage: `url('${getImage(banner)}')` }"
     >
-      <div v-if="mode === 'dark'" class="overlay rounded-lg"></div>
+      <div class="overlay rounded-lg"></div>
     </div>
     <CardHeader class="z-10">
       <CardTitle class="text-4xl font-bold text-white text-shadow-black text-shadow-sm">
@@ -57,15 +56,13 @@ const mode = useColorMode()
       </p>
     </CardContent>
     <CardFooter class="mt-5 gap-5 z-10">
-      <!-- TODO: Add functionality to buttons.-->
-      <Button class="button">Watch now</Button>
-      <!-- NOTE: May run into issues where if movie desc is too long, buttons will go off screen. Yet to test if this is true. -->
-      <Button variant="secondary" class="button">More Info</Button>
+      <RouterLink :to="link">
+        <Button variant="default" class="cursor-pointer"> Watch now </Button>
+      </RouterLink>
     </CardFooter>
   </Card>
 </template>
 
-<!-- CSS stuff, Very messy atm but will redo it better -->
 <style scoped lang="scss">
 .home-card {
   height: 70vh;
@@ -85,33 +82,10 @@ const mode = useColorMode()
   width: 100%;
   will-change: transform;
   animation: bg-breathe 40s ease-in-out infinite;
-
-  /* Adjusts the grey scale overlay  */
-  .overlay {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    background: linear-gradient(
-      to bottom,
-      rgba(14, 13, 13, 0.3) 0%,
-      rgba(0, 0, 0, 0.5) 50%,
-      var(--color-background) 99%
-    );
-  }
 }
 
 .description {
   font-size: 0.9rem;
-}
-
-.button {
-  cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  transition: transform 0.1s ease-in-out;
-}
-
-.button:active {
-  transform: scale(0.98); /* Slight press effect on click */
 }
 
 @keyframes bg-breathe {

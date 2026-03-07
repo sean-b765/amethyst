@@ -4,7 +4,9 @@ import HomeView from '@/views/HomeView.vue'
 import LibrariesView from '@/views/LibrariesView.vue'
 import LibraryDetailView from '@/views/LibraryDetailView.vue'
 import PlayerView from '@/views/PlayerView.vue'
-import { LayoutGrid, LibrarySquare, PlaySquare } from 'lucide-vue-next'
+import TvSeriesDetailView from '@/views/TvSeriesDetailView.vue'
+import TvSeriesSeasonDetailView from '@/views/TvSeriesSeasonDetailView.vue'
+import { LayoutGrid, LibrarySquare } from 'lucide-vue-next'
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
 const routes: RouteRecordRaw[] = [
@@ -32,6 +34,18 @@ const routes: RouteRecordRaw[] = [
         path: 'libraries/:libraryId',
         component: LibraryDetailView,
         name: 'Library',
+      },
+      {
+        path: 'tv/:tvSeriesId',
+        component: TvSeriesDetailView,
+        name: 'TvSeries',
+        children: [
+          {
+            path: ':season',
+            component: TvSeriesSeasonDetailView,
+            name: 'TvSeason',
+          },
+        ],
       },
     ],
   },

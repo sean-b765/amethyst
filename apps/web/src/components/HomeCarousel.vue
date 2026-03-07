@@ -13,19 +13,27 @@ import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carouse
 import { useSidebar } from '@/components/ui/sidebar'
 import { getImage } from '@/lib/utils'
 import { computed } from 'vue'
+import { RouterLink, useRouter } from 'vue-router'
 
 const { listType, mediaList } = defineProps<{
   listType: string
-  mediaList: { id: string; thumbnail?: string }[]
+  mediaList: { id: string; thumbnail?: string; series?: boolean }[]
 }>()
 const { open } = useSidebar()
+const router = useRouter()
 const maxWidth = computed(() => {
   const paddingOffset = 40
   if (open.value) return `calc(100vw - var(--sidebar-width) - ${paddingOffset}px)`
   return `calc(100vw - ${paddingOffset}px)`
 })
 
-// const MAX_CAROUSEL_ITEMS = 10 // Max amount of items the carousel contains, may need
+function getLink(id: string, series: boolean = false) {
+  if (series) {
+    return router.resolve({ name: 'TvSeries', params: { tvSeriesId: id } }).href
+  } else {
+    return router.resolve({ name: 'WatchMedia', params: { mediaId: id } }).href
+  }
+}
 </script>
 <template>
   <div class="title mt-2">{{ listType }}</div>
@@ -46,13 +54,15 @@ const maxWidth = computed(() => {
           class="xs:basis-1/2 sm:basis-1/3 lg:basis-1/4 xl:basis-1/6"
         >
           <div class="card my-1">
-            <Card>
-              <CardContent
-                class="card-content"
-                :style="{ backgroundImage: `url('${getImage(m?.thumbnail ?? '')}')` }"
-              >
-              </CardContent>
-            </Card>
+            <RouterLink :to="getLink(m.id, m.series)">
+              <Card>
+                <CardContent
+                  class="card-content"
+                  :style="{ backgroundImage: `url('${getImage(m?.thumbnail ?? '')}')` }"
+                >
+                </CardContent>
+              </Card>
+            </RouterLink>
           </div>
         </CarouselItem>
       </CarouselContent>

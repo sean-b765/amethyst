@@ -37,11 +37,16 @@ public class TvSeriesService
     TvSeason tvSeason = this.tvSeasonService.findById(tvSeasonId)
         .orElseThrow();
 
-    // Estalish links
+    if (tvSeries.getTvSeasons().contains(tvSeason)
+        && tvSeason.getTvSeries() != null
+        && tvSeason.getTvSeries().equals(tvSeries)) {
+      return;
+    }
 
+    // Estalish links:
     // TvSeries -> TvSeasons
     tvSeries.getTvSeasons().add(tvSeason);
-    // TvSeason -> TvSerie
+    // TvSeason -> TvSeries
     tvSeason.setTvSeries(tvSeries);
     this.tvSeasonService.save(tvSeason);
   }

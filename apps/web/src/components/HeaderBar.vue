@@ -13,19 +13,26 @@ import { uniq } from 'lodash'
 import { useMediaStore } from '@/stores/media'
 import { storeToRefs } from 'pinia'
 import { useLibraryStore } from '@/stores/library'
+import { useTvSeriesStore } from '@/stores/tvSeries'
 const route = useRoute()
 const router = useRouter()
 const mediaStore = useMediaStore()
 const libraryStore = useLibraryStore()
+const tvSeriesStore = useTvSeriesStore()
 const { selectedMedia } = storeToRefs(mediaStore)
 const { selectedLibrary } = storeToRefs(libraryStore)
+const { selectedTvSeries } = storeToRefs(tvSeriesStore)
 
 function resolveName(name: string) {
   switch (name) {
     case 'WatchMedia':
       return selectedMedia.value?.info?.name
     case 'Library':
-      return selectedLibrary.value?.name
+      return selectedLibrary.value?.name ?? 'Library'
+    case 'TvSeries':
+      return selectedTvSeries.value?.name ?? 'Series'
+    case 'TvSeason':
+      return `S${route.params.season}`
     default:
       return name
   }

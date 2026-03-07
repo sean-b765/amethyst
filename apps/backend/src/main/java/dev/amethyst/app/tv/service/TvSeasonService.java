@@ -1,5 +1,6 @@
 package dev.amethyst.app.tv.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -21,6 +22,10 @@ public class TvSeasonService
 
   public Optional<TvSeason> findByTvSeriesAndSeason(String seriesId, Integer season) {
     return this.repository.findByTvSeriesIdAndSeason(seriesId, season);
+  }
+
+  public List<TvSeason> findByTvSeries(String seriesId) {
+    return this.repository.findByTvSeriesId(seriesId);
   }
 
 }
