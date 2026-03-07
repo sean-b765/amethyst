@@ -7,11 +7,10 @@ import java.util.List;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import dev.amethyst.app.config.base.LibraryEntity;
 import dev.amethyst.app.tv.handler.TvSeriesEventListener;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -47,7 +46,7 @@ public class TvSeries extends LibraryEntity {
   private String banner;
 
   @OneToMany(mappedBy = "tvSeries")
-  @JsonBackReference
+  @JsonManagedReference
   @Builder.Default
   private List<TvSeason> tvSeasons = new ArrayList<>();
 }

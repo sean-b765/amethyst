@@ -3,60 +3,72 @@ import { Card, CardFooter } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { formatDuration, getImage } from '@/lib/utils'
 import moment from 'moment'
+import { RouterLink } from 'vue-router'
 
 const { thumbnail, durationSeconds, name, releaseDate } = defineProps<{
   thumbnail?: string
+  hoverThumbnail?: string
   id?: string
   releaseDate?: string
   name?: string
   durationSeconds?: number
+  href?: string
 }>()
 </script>
 
 <template>
-  <Card class="flex items-end h-80 group relative overflow-hidden cursor-pointer rounded-sm">
-    <div class="h-full w-full z-0 absolute transition-all">
-      <div
-        v-if="thumbnail"
-        class="bg-cover bg-center w-full h-full transition-all"
-        :style="{
-          backgroundImage: `url('${getImage(thumbnail)}')`,
-        }"
-      ></div>
-      <div v-else class="w-full h-full flex items-center justify-center">
-        <span
-          class="loader mb-16"
+  <RouterLink :to="href ?? ''">
+    <Card class="flex items-end h-80 group relative overflow-hidden cursor-pointer rounded-sm">
+      <div class="h-full w-full z-0 absolute transition-all">
+        <div
+          v-if="thumbnail"
+          class="bg-cover bg-center w-full h-full transition-all"
           :style="{
-            animationDelay: `${Math.random() * 500}ms`,
-            animationDuration: `${750 + Math.random() * 500}ms`,
+            backgroundImage: `url('${getImage(thumbnail)}')`,
           }"
-        ></span>
+        ></div>
+        <div
+          v-if="hoverThumbnail"
+          class="absolute inset-0 bg-cover bg-center w-full h-full opacity-0 group-hover:opacity-100 group-hover:delay-200 transition-opacity duration-500 delay-0"
+          :style="{
+            backgroundImage: `url('${getImage(hoverThumbnail)}')`,
+          }"
+        ></div>
+        <div v-else class="w-full h-full flex items-center justify-center">
+          <span
+            class="loader mb-16"
+            :style="{
+              animationDelay: `${Math.random() * 500}ms`,
+              animationDuration: `${750 + Math.random() * 500}ms`,
+            }"
+          ></span>
+        </div>
       </div>
-    </div>
-    <CardFooter
-      class="w-full h-auto bg-muted/50 flex backdrop-blur-lg items-start gap-1 flex-col pb-2 pt-2 px-3 z-1 transition-all duration-300 rounded-none group-hover:bg-muted/90"
-    >
-      <Tooltip>
-        <TooltipTrigger
-          as="span"
-          class="w-full text-sm truncate opacity-95 font-bold group-hover:opacity-100"
-        >
-          {{ name }}
-        </TooltipTrigger>
-        <TooltipContent side="bottom" :side-offset="30">
-          <span>{{ name }}</span>
-        </TooltipContent>
-      </Tooltip>
-      <span class="w-full truncate flex justify-between">
-        <span class="truncate flex-1 text-xs opacity-90 group-hover:opacity-100">
-          {{ moment(releaseDate).get('year') }}
+      <CardFooter
+        class="w-full h-auto bg-muted/50 flex backdrop-blur-lg items-start gap-1 flex-col pb-2 pt-2 px-3 z-1 transition-all duration-300 rounded-none group-hover:bg-muted/90"
+      >
+        <Tooltip>
+          <TooltipTrigger
+            as="span"
+            class="w-full text-sm truncate opacity-95 font-bold group-hover:opacity-100"
+          >
+            {{ name }}
+          </TooltipTrigger>
+          <TooltipContent side="bottom" :side-offset="30">
+            <span>{{ name }}</span>
+          </TooltipContent>
+        </Tooltip>
+        <span class="w-full truncate flex justify-between">
+          <span class="truncate flex-1 text-xs opacity-90 group-hover:opacity-100">
+            {{ moment(releaseDate).get('year') }}
+          </span>
+          <span class="truncate text-xs opacity-60 group-hover:opacity-70">
+            {{ durationSeconds ? formatDuration(durationSeconds) : '' }}
+          </span>
         </span>
-        <span class="truncate text-xs opacity-60 group-hover:opacity-70">
-          {{ durationSeconds ? formatDuration(durationSeconds) : '' }}
-        </span>
-      </span>
-    </CardFooter>
-  </Card>
+      </CardFooter>
+    </Card>
+  </RouterLink>
 </template>
 
 <style scoped>

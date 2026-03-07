@@ -31,9 +31,9 @@ const recommendedMovies = computed(() =>
   Array.isArray(movies.value) ? movies.value.slice(2, 12) : [],
 )
 
-const topMovies = computed(() => (Array.isArray(movies.value) ? movies.value.slice(0, 10) : []))
+const topMovies = computed(() => (Array.isArray(movies.value) ? movies.value.slice(0, 30) : []))
 
-const topSeries = computed(() => (Array.isArray(series.value) ? series.value.slice(0, 10) : []))
+const topSeries = computed(() => (Array.isArray(series.value) ? series.value.slice(0, 30) : []))
 </script>
 <template>
   <div class="w-full h-full max-h-[calc(100vh-96px)] rounded-md overflow-y-auto flex flex-col">
@@ -60,12 +60,12 @@ const topSeries = computed(() => (Array.isArray(series.value) ? series.value.sli
         :mediaList="recommendedMovies.map((m) => ({ id: m.id, thumbnail: m.info?.thumbnail }))"
       />
       <HomeCarousel
-        :listType="'Top 10 Movies'"
+        :listType="'Your Movies'"
         :mediaList="topMovies.map((m) => ({ id: m.id, thumbnail: m.info?.thumbnail }))"
       />
       <HomeCarousel
-        :listType="'Top 10 Series'"
-        :mediaList="topSeries.map((s) => ({ id: s.id, thumbnail: s.thumbnail }))"
+        :listType="'Your TV Series'"
+        :mediaList="topSeries.map((s) => ({ id: s.id, thumbnail: s.thumbnail, series: true }))"
       />
     </div>
   </div>
