@@ -10,6 +10,7 @@ import dev.amethyst.app.transcode.service.TranscodingService;
 import dev.amethyst.app.video.model.QualityProfiles;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -39,23 +40,32 @@ public class PlaylistManager {
 
   public String generateVodPlaylist(Media media, QualityProfiles.QualityProfile qualityProfile) {
     KeyframeData keyframeData = keyframeExtractor.getKeyframeData(media.getPath());
-    List<Double> segments = this.getSegmentsExact(keyframeData);
+    return this.generateVodPlaylist(
+        String.format("/api/video/%s/%s", media.getId(), qualityProfile.getName()),
+        keyframeData);
+  }
+
+  public String generateVodPlaylist(String uriPrefix, KeyframeData keyframeData) {
+    List<Double> segments = this.getSegments(keyframeData);
+    int targetDuration = Math.max(
+        (int) Collections.max(segments).doubleValue(),
+        (int) this.transcodingService.getSegmentLength());
 
     StringBuilder vodPlaylist = new StringBuilder();
     vodPlaylist.append("#EXTM3U\n");
     vodPlaylist.append("#EXT-X-VERSION:3\n");
-    vodPlaylist.append("#EXT-X-TARGETDURATION:").append(4).append("\n");
+    vodPlaylist.append("#EXT-X-TARGETDURATION:").append(targetDuration).append("\n");
     vodPlaylist.append("#EXT-X-MEDIA-SEQUENCE:0\n");
     vodPlaylist.append("#EXT-X-PLAYLIST-TYPE:VOD\n");
     for (int i = 0; i < segments.size(); i++) {
       double segment = segments.get(i);
-      vodPlaylist.append("#EXTINF:").append(segment).append("\n");
-      String uri = String.format(
-          "/api/video/%s/%s/segment%05d.ts",
-          media.getId(),
-          qualityProfile.getName(),
-          i);
-      vodPlaylist.append(uri).append("\n");
+      double rounded = Math.round(segment * 1_000_000.0) / 1_000_000.0;
+      vodPlaylist.append("#EXTINF:").append(rounded).append("\n");
+
+      String uriPrefixWithoutLeadingSlash = uriPrefix.endsWith("/") ? uriPrefix.replaceAll("\\/$", "") : uriPrefix;
+      String fullUri = String.format("%s/segment%05d.ts", uriPrefixWithoutLeadingSlash, i);
+
+      vodPlaylist.append(fullUri).append("\n");
     }
     vodPlaylist.append("#EXT-X-ENDLIST");
     return vodPlaylist.toString();
@@ -82,22 +92,24 @@ public class PlaylistManager {
 
   public List<Double> getSegments(KeyframeData keyframeData) {
     List<Double> keyframes = keyframeData.getPositions();
-    List<Double> segments = new ArrayList<>();
-    double segmentLength = this.transcodingService.getSegmentLength();
 
     if (keyframes.isEmpty()) {
       throw new IllegalArgumentException("Invalid KeyframeData passed to getSegments()");
     }
 
-    double lastKeyframe = 0.0;
+    List<Double> segments = new ArrayList<>();
+    double segmentLength = this.transcodingService.getSegmentLength();
+    double lastKeyframe = keyframes.get(0);
     double desiredCutTime = segmentLength;
-    for (double keyframe : keyframes) {
-      if (keyframe < desiredCutTime)
-        continue;
-      double currentSegmentLength = keyframe - lastKeyframe;
-      segments.add(currentSegmentLength);
-      lastKeyframe = keyframe;
-      desiredCutTime += segmentLength;
+    for (int i = 1; i < keyframes.size(); i++) {
+      double keyframe = keyframes.get(i);
+
+      if (keyframe >= desiredCutTime) {
+        double currentSegmentLength = keyframe - lastKeyframe;
+        segments.add(currentSegmentLength);
+        lastKeyframe = keyframe;
+        desiredCutTime += segmentLength;
+      }
     }
 
     return segments;

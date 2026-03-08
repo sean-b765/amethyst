@@ -26,7 +26,7 @@ public class KeyframeExtractor {
         "-skip_frame", "nokey",
         "-select_streams", "v:0",
         "-show_entries", "format=duration",
-        "-show_entries", "packet=pts_time",
+        "-show_entries", "packet=pts_time,flags",
         "-of", "json",
         inputFile);
     if (process == null)
@@ -76,6 +76,9 @@ public class KeyframeExtractor {
 
     JsonNode packets = root.path("packets");
     for (JsonNode pkt : packets) {
+      String flags = pkt.path("flags").asText("");
+      if (!flags.contains("K"))
+        continue; // K = keyframe
       double pts = pkt.path("pts_time").asDouble();
       keyframeData.getPositions().add(pts);
     }
