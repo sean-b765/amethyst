@@ -1,15 +1,29 @@
 package dev.amethyst.app.lib;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.mockito.ArgumentMatchers.anyString;
+
+import dev.amethyst.app.lib.service.MimeTypeService;
 import dev.amethyst.app.metadata.model.FileNameMetadata;
 import dev.amethyst.app.metadata.service.FileNameParser;
 
+@ExtendWith(MockitoExtension.class)
 public class FileNameParserTests {
-  private FileNameParser fileNameParser = new FileNameParser();
+  @Mock
+  private MimeTypeService mimeTypeService;
+
+  @InjectMocks
+  private FileNameParser fileNameParser;
 
   @Test
   public void testFileNameParser() {
+    Mockito.when(mimeTypeService.isMusicType(anyString())).thenReturn(false);
     expectFrom("I, Robot.mp4")
         .title("I, Robot");
     expectFrom("Breaking Bad s02ep11 720p brrip.sujaidr.mkv")
