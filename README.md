@@ -13,8 +13,8 @@
 
 A full-stack monorepo containing the:
 
-- Backend: Java 21/Maven/Spring Boot
-- Web: Vue.js
+- **Backend**: Java 21/Maven/Spring Boot
+- **Web**: Vue.js
 
 ## Scripts
 
