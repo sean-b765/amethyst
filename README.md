@@ -45,6 +45,12 @@ The default admin credentials are `admin:Admin123!`
 2. An access token is granted in the `Authorization` header, and is required for all API requests.
 3. A refresh token is also granted in your Cookies (`refreshToken` cookie), and has a longer lifespan. To avoid logging in every time, hit `/api/refresh`. This will grant another `Authorization` access token
 
+### Security keys
+
+```
+openssl rand -base64 32
+```
+
 ## API testing
 
 With the backend running:

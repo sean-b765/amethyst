@@ -22,6 +22,7 @@ public class Metadata {
   @Data
   @AllArgsConstructor
   @NoArgsConstructor
+  @JsonIgnoreProperties(ignoreUnknown = true)
   public static class MetadataStream {
     @JsonProperty("r_frame_rate")
     private String framerate;
@@ -52,6 +53,7 @@ public class Metadata {
   @Data
   @AllArgsConstructor
   @NoArgsConstructor
+  @JsonIgnoreProperties(ignoreUnknown = true)
   public static class MetadataFormat {
     @JsonProperty("duration")
     private Double durationSeconds;

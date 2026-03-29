@@ -32,11 +32,14 @@ public class TranscodeWorker implements Runnable {
 
       Process ffmpegProcess = this.transcodeManager.getFfmpegService().ffmpeg(this.outputPath, arguments);
       if (ffmpegProcess == null) {
-        return;
+        throw new IllegalStateException("FFMPEG process is invalid (null)");
       }
       this.transcodeManager.registerFfmpegProcess(ffmpegProcess);
       ffmpegProcess.waitFor();
-    } catch (IOException | InterruptedException ignored) {
+    } catch (IOException | InterruptedException ex) {
+      ex.printStackTrace();
+    } catch (IllegalStateException ex) {
+      ex.printStackTrace();
     }
   }
 

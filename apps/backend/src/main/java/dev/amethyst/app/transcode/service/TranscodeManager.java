@@ -11,6 +11,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,7 +69,7 @@ public class TranscodeManager {
         if (Files.exists(segmentPath)) {
           segmentReadyFuture.complete(null);
         } else if (System.currentTimeMillis() - start >= timeoutMs) {
-          segmentReadyFuture.completeExceptionally(new Exception("File Not Found"));
+          segmentReadyFuture.completeExceptionally(new TimeoutException("Segment not found after " + timeoutMs + "ms"));
         }
       } catch (Exception ex) {
         segmentReadyFuture.completeExceptionally(ex);

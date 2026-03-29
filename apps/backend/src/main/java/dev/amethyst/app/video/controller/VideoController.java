@@ -118,6 +118,7 @@ public class VideoController {
 
     segmentReadyFuture.whenComplete((result, exception) -> {
       if (exception != null) {
+        exception.printStackTrace();
         deferredResult.setResult(ResponseEntity.internalServerError().build());
         return;
       }
