@@ -1,5 +1,8 @@
 package dev.amethyst.app.transcode.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,7 +66,6 @@ public class TranscodingService {
   private final String hlsMuxerArgs = "-f hls -hls_time " +
       String.valueOf(this.segmentLength)
       + " -hls_playlist_type vod -hls_segment_filename \"segment%05d.ts\" -hls_segment_type mpegts ";
-  private final String inputArg = "-i \"%s\" ";
   private final String x264Args = "-x264opts:0 \"no-scenecut=1:subme=0:me_range=16:rc_lookahead=0:me=hex:open_gop=0\" ";
   private final String gopArgs = "-force_key_frames \"expr:gte(t,n_forced*" +
       String.valueOf(this.segmentLength) + ")\" -g:v:0 %s -keyint_min:v:0 %s ";
@@ -146,9 +148,10 @@ public class TranscodingService {
   public String[] getHlsArguments(TranscodeJob transcodeJob, String outputDirectory) {
     Media media = transcodeJob.getMedia();
     StringBuilder argsBuilder = new StringBuilder();
+    List<String> argsList = new ArrayList<>();
 
     // Input file args
-    argsBuilder.append(String.format(this.inputArg, transcodeJob.getMedia().getPath()));
+    argsList.add(String.format("-i \"%s\" ", transcodeJob.getMedia().getPath()));
 
     // Get audio/video transcode args if necessary
     if (media.getMetadata().getContainer().isAudio()) {
@@ -165,11 +168,13 @@ public class TranscodingService {
     double fromTimestampSeconds = fromSegmentNumber * this.segmentLength;
     argsBuilder.append(String.format(this.startNumberArg, fromSegmentNumber, fromTimestampSeconds));
 
-    // Set output path
-    String outputPath = String.format("\"%s\"", StringUtils.joinWith("/", outputDirectory, "index.m3u8"));
-    argsBuilder.append(outputPath);
+    argsList.addAll(Arrays.asList(argsBuilder.toString().split(" ")));
 
-    return argsBuilder.toString().split(" ");
+    // Set output path as last ffmpeg parameter
+    String outputPath = String.format("\"%s\"", StringUtils.joinWith("/", outputDirectory, "index.m3u8"));
+    argsList.add(outputPath);
+
+    return (String[]) argsList.toArray();
   }
 
   public long extractSegmentNumber(String filename) {
