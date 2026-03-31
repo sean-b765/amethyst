@@ -40,6 +40,8 @@ public class TranscodeWorker implements Runnable {
       ex.printStackTrace();
     } catch (IllegalStateException ex) {
       ex.printStackTrace();
+    } catch (Exception ex) {
+      ex.printStackTrace();
     }
   }
 
