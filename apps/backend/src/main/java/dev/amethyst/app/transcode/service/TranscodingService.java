@@ -173,8 +173,7 @@ public class TranscodingService {
     // Set output path as last ffmpeg parameter
     String outputPath = String.format("\"%s\"", StringUtils.joinWith("/", outputDirectory, "index.m3u8"));
     argsList.add(outputPath);
-
-    return (String[]) argsList.toArray();
+    return argsList.toArray(String[]::new);
   }
 
   public long extractSegmentNumber(String filename) {
