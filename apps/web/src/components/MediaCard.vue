@@ -12,6 +12,7 @@ const { thumbnail, durationSeconds, name, releaseDate } = defineProps<{
   releaseDate?: string
   name?: string
   durationSeconds?: number
+  episode?: number
   href?: string
 }>()
 </script>
@@ -52,10 +53,13 @@ const { thumbnail, durationSeconds, name, releaseDate } = defineProps<{
             as="span"
             class="w-full text-sm truncate opacity-95 font-bold group-hover:opacity-100"
           >
-            {{ name }}
+            {{ episode ? `${episode}: ` : '' }} {{ name }}
           </TooltipTrigger>
           <TooltipContent side="bottom" :side-offset="30">
-            <span>{{ name }}</span>
+            <span>
+              {{ episode ? `${episode}: ` : '' }}
+              {{ name }}
+            </span>
           </TooltipContent>
         </Tooltip>
         <span class="w-full truncate flex justify-between">
