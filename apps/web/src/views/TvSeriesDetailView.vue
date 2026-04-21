@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import MediaCard from '@/components/MediaCard.vue'
 import { AlertCircle } from 'lucide-vue-next'
@@ -21,6 +22,10 @@ const router = useRouter()
 const route = useRoute()
 const tvSeriesStore = useTvSeriesStore()
 const { selectedTvSeries } = storeToRefs(tvSeriesStore)
+
+const sortedTvSeasons = computed(() =>
+  [...(selectedTvSeries.value?.tvSeasons ?? [])].sort((a, b) => (a.season ?? 0) - (b.season ?? 0))
+)
 
 function getSeasonHref(tvSeason: TvSeason) {
   return router.resolve({ name: 'TvSeason', params: { season: tvSeason.season } }).href
@@ -72,9 +77,9 @@ function getSeasonHref(tvSeason: TvSeason) {
           </p>
         </CardContent>
       </Card>
-      <template v-if="selectedTvSeries.tvSeasons?.length">
+      <template v-if="sortedTvSeasons.length">
         <MediaCard
-          v-for="season of selectedTvSeries.tvSeasons"
+          v-for="season of sortedTvSeasons"
           :key="season.id"
           :id="season.id"
           :name="season.name"
