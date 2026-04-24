@@ -15,12 +15,20 @@ public class MimeTypeService {
       "mp3", "audio/mp3");
 
   public boolean isVideoType(String fileName) {
-    String extension = fileName.contains(".") ? StringUtils.substringAfterLast(fileName, ".") : fileName;
-    return videoTypes.containsKey(extension);
+    for (String type : videoTypes.keySet()) {
+      if (StringUtils.endsWith("." + type, fileName)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public boolean isMusicType(String fileName) {
-    String extension = fileName.contains(".") ? StringUtils.substringAfterLast(fileName, ".") : fileName;
-    return musicTypes.containsKey(extension);
+    for (String type : musicTypes.keySet()) {
+      if (StringUtils.endsWith("." + type, fileName)) {
+        return true;
+      }
+    }
+    return false;
   }
 }
