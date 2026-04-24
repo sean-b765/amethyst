@@ -31,36 +31,33 @@ public class PlaylistManagerTests {
   @Autowired
   private PlaylistManager playlistManager;
 
+  /**
+   * Generate a KeyframeData json file to load into tests by running this once per
+   * file
+   */
+  @Test
+  public void writeKeyframeDataFile() {
+    // String mp4 = "/Users/sean/Movies/amethyst/tv/Breaking Bad Season 1 Complete
+    // 720p.BRrip.Sujaidr/Breaking Bad s01e02 720p.BRrip.Sujaidr.mkv";
+    // KeyframeData mp4Result = this.extractAndWriteKeyFrameData(mp4);
+  }
+
   @Test
   public void testGetSegments() {
-    // String mkv = "E:/Stuff/Media/TV/Game of Thrones/Season 1/Game of Thrones
-    // S01E01 - Winter is Coming.mkv";
-    // KeyframeData mkvResult = this.extractAndWriteKeyFrameData(mkv);
-    // assertTrue(mkvResult.getDuration() > 0);
-    // assertFalse(mkvResult.getPositions().isEmpty());
+    KeyframeData keyframeDataMkv = this.loadKeyframeData("Game of Thrones S01E01 - Winter is Coming.mkv");
+    this.playlistManager.generateVodPlaylist("", keyframeDataMkv);
 
-    // KeyframeData keyframeDataMkv = this.loadKeyframeData("Game of Thrones S01E01
-    // - Winter is Coming.mkv");
-    // this.playlistManager.generateVodPlaylist("", keyframeDataMkv);
-
-    // String mp4 = "E:/Stuff/Media/Movies/Avatar 2009.mp4";
-    // KeyframeData mp4Result = this.extractAndWriteKeyFrameData(mp4);
     KeyframeData keyframeDataMp4 = this.loadKeyframeData("Avatar 2009.mp4");
-    // List<Double> segments = this.playlistManager.getSegments(keyframeDataMp4);
+    List<Double> segments = this.playlistManager.getSegments(keyframeDataMp4);
     String playlist = this.playlistManager.generateVodPlaylist("", keyframeDataMp4);
     System.out.println(playlist.substring(0, 500));
 
-    // assertTrue(mp4Result.getDuration() > 0);
-    // assertFalse(mp4Result.getPositions().isEmpty());
+    String hevc = "Sunset.Blvd.1950.720p.BluRay.999MB.HQ.x265.10bit-GalaxyRG.mkv";
+    KeyframeData keyframeDataHevc = this
+        .loadKeyframeData("Sunset.Blvd.1950.720p.BluRay.999MB.HQ.x265.10bit-GalaxyRG.mkv");
 
-    // String hevc =
-    // "E:/Stuff/Media/Movies/Sunset.Blvd.1950.720p.BluRay.999MB.HQ.x265.10bit-GalaxyRG.mkv";
-    // KeyframeData hevcResult = this.extractAndWriteKeyFrameData(hevc);
-    // KeyframeData keyframeDataHevc = this
-    // .loadKeyframeData("Sunset.Blvd.1950.720p.BluRay.999MB.HQ.x265.10bit-GalaxyRG.mkv");
-
-    // assertTrue(hevcResult.getDuration() > 0);
-    // assertFalse(hevcResult.getPositions().isEmpty());
+    assertTrue(hevcResult.getDuration() > 0);
+    assertFalse(hevcResult.getPositions().isEmpty());
   }
 
   private KeyframeData loadKeyframeData(String inputFile) {
