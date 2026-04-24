@@ -51,8 +51,8 @@ public class PlaybackHelperService {
       return PlaybackCompatibility.TRANSCODE_AUDIO;
 
     if (!isContainerSupported)
-      return PlaybackCompatibility.REMUX;
+      return PlaybackCompatibility.DIRECT_PLAY;
 
-    return PlaybackCompatibility.REMUX;
+    return PlaybackCompatibility.DIRECT_PLAY;
   }
 }

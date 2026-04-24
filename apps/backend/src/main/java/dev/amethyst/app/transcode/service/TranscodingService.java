@@ -85,42 +85,45 @@ public class TranscodingService {
     if (media == null || media.getMetadata() == null)
       return argsBuilder.toString();
 
-    // TODO: if possible, avoid at all cost
     long fps = media.getMetadata().getFramerate();
-    argsBuilder.append(String.format(this.constantFramerateArgs, fps));
-
-    // TODO: if possible, avoid at all cost
-    double gop = fps * this.segmentLength;
-    argsBuilder.append(String.format(this.gopArgs, gop, gop));
-
-    // TODO: if possible, avoid at all cost
-    argsBuilder.append(this.forcePixelFormatArgs);
-
     PlaybackCompatibility compatibility = this.playbackHelperService.getPlaybackCompatibility(media.getMetadata());
+
     switch (compatibility) {
       case TRANSCODE_BOTH:
         argsBuilder.append(this.baseVideoArgs);
         argsBuilder.append(this.videoCodecArgs);
-        // argsBuilder.append(this.x264Args);
         argsBuilder.append(this.audioCodecArgs);
+        this.forceKeyframes(argsBuilder, fps);
         break;
       case TRANSCODE_AUDIO:
         argsBuilder.append(this.keepVideoCodecArgs);
         argsBuilder.append(this.audioCodecArgs);
+        this.forceKeyframes(argsBuilder, fps);
         break;
       case TRANSCODE_VIDEO:
         argsBuilder.append(this.keepAudioCodecArgs);
         argsBuilder.append(this.baseVideoArgs);
         argsBuilder.append(this.videoCodecArgs);
-        // argsBuilder.append(this.x264Args);
+        this.forceKeyframes(argsBuilder, fps);
         break;
-      case REMUX:
-        argsBuilder.append(this.keepVideoCodecArgs);
-        argsBuilder.append(this.keepAudioCodecArgs);
+      default:
         break;
     }
 
     return argsBuilder.toString();
+  }
+
+  /**
+   * Add ffmpeg arguments to force the segment length.
+   * 
+   * @param args
+   * @param fps
+   */
+  private void forceKeyframes(StringBuilder args, long fps) {
+    double gop = this.segmentLength * fps;
+    args.append(String.format(this.constantFramerateArgs, fps));
+    args.append(String.format(this.gopArgs, gop, gop));
+    args.append(this.forcePixelFormatArgs);
   }
 
   /**
@@ -137,7 +140,7 @@ public class TranscodingService {
       case TRANSCODE_AUDIO:
         argsBuilder.append(this.audioCodecArgs);
         break;
-      case REMUX:
+      case DIRECT_PLAY:
         argsBuilder.append(this.keepAudioCodecArgs);
         break;
     }
