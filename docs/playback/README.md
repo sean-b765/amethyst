@@ -1,0 +1,2 @@
+1. Some video and audio codecs are playable directly in your web browser. This playback method is called direct play. If the browser is incompatible with a file type, the backend must transcode on-demand to a tmp directory.
+2. When transcoding, we choose to format the output stream as HLS (Http Live Streaming) - this splits the files into segments, which will then be fetched from the browser when needed. We will always transcode to **h264 8-bit** + **aac**.
