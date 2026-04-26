@@ -22,22 +22,22 @@ import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObj
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError, operationServerMap } from '../base';
 // @ts-ignore
-import type { Library } from '../models';
+import type { TvSeason } from '../models';
 /**
- * LibraryControllerApi - axios parameter creator
+ * TVSeasonsApi - axios parameter creator
  */
-export const LibraryControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+export const TVSeasonsApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * 
-         * @param {Library} library 
+         * @param {TvSeason} tvSeason 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        create4: async (library: Library, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'library' is not null or undefined
-            assertParamExists('create4', 'library', library)
-            const localVarPath = `/api/library`;
+        create2: async (tvSeason: TvSeason, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'tvSeason' is not null or undefined
+            assertParamExists('create2', 'tvSeason', tvSeason)
+            const localVarPath = `/api/seasons`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -59,7 +59,7 @@ export const LibraryControllerApiAxiosParamCreator = function (configuration?: C
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(library, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(tvSeason, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -72,10 +72,10 @@ export const LibraryControllerApiAxiosParamCreator = function (configuration?: C
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteById4: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deleteById2: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('deleteById4', 'id', id)
-            const localVarPath = `/api/library/{id}`
+            assertParamExists('deleteById2', 'id', id)
+            const localVarPath = `/api/seasons/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -108,10 +108,10 @@ export const LibraryControllerApiAxiosParamCreator = function (configuration?: C
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteByIds4: async (requestBody: Array<string>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deleteByIds2: async (requestBody: Array<string>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'requestBody' is not null or undefined
-            assertParamExists('deleteByIds4', 'requestBody', requestBody)
-            const localVarPath = `/api/library`;
+            assertParamExists('deleteByIds2', 'requestBody', requestBody)
+            const localVarPath = `/api/seasons`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -145,8 +145,8 @@ export const LibraryControllerApiAxiosParamCreator = function (configuration?: C
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        findAll4: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/library`;
+        findAll2: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/seasons`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -178,10 +178,10 @@ export const LibraryControllerApiAxiosParamCreator = function (configuration?: C
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        findById4: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        findById2: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('findById4', 'id', id)
-            const localVarPath = `/api/library/{id}`
+            assertParamExists('findById2', 'id', id)
+            const localVarPath = `/api/seasons/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -214,10 +214,10 @@ export const LibraryControllerApiAxiosParamCreator = function (configuration?: C
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        findByIds4: async (requestBody: Array<string>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        findByIds2: async (requestBody: Array<string>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'requestBody' is not null or undefined
-            assertParamExists('findByIds4', 'requestBody', requestBody)
-            const localVarPath = `/api/library/fetch`;
+            assertParamExists('findByIds2', 'requestBody', requestBody)
+            const localVarPath = `/api/seasons/fetch`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -248,15 +248,15 @@ export const LibraryControllerApiAxiosParamCreator = function (configuration?: C
         },
         /**
          * 
-         * @param {string} id 
+         * @param {string} tvSeriesId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        scan: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('scan', 'id', id)
-            const localVarPath = `/api/library/{id}/scan`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        findByTvSeries: async (tvSeriesId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'tvSeriesId' is not null or undefined
+            assertParamExists('findByTvSeries', 'tvSeriesId', tvSeriesId)
+            const localVarPath = `/api/seasons/{tvSeriesId}/seasons`
+                .replace(`{${"tvSeriesId"}}`, encodeURIComponent(String(tvSeriesId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -264,7 +264,7 @@ export const LibraryControllerApiAxiosParamCreator = function (configuration?: C
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -284,14 +284,14 @@ export const LibraryControllerApiAxiosParamCreator = function (configuration?: C
         },
         /**
          * 
-         * @param {Library} library 
+         * @param {TvSeason} tvSeason 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        upsert4: async (library: Library, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'library' is not null or undefined
-            assertParamExists('upsert4', 'library', library)
-            const localVarPath = `/api/library`;
+        upsert2: async (tvSeason: TvSeason, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'tvSeason' is not null or undefined
+            assertParamExists('upsert2', 'tvSeason', tvSeason)
+            const localVarPath = `/api/seasons`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -313,7 +313,7 @@ export const LibraryControllerApiAxiosParamCreator = function (configuration?: C
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(library, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(tvSeason, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -324,21 +324,21 @@ export const LibraryControllerApiAxiosParamCreator = function (configuration?: C
 };
 
 /**
- * LibraryControllerApi - functional programming interface
+ * TVSeasonsApi - functional programming interface
  */
-export const LibraryControllerApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = LibraryControllerApiAxiosParamCreator(configuration)
+export const TVSeasonsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = TVSeasonsApiAxiosParamCreator(configuration)
     return {
         /**
          * 
-         * @param {Library} library 
+         * @param {TvSeason} tvSeason 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async create4(library: Library, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Library>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.create4(library, options);
+        async create2(tvSeason: TvSeason, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TvSeason>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.create2(tvSeason, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['LibraryControllerApi.create4']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['TVSeasonsApi.create2']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -347,10 +347,10 @@ export const LibraryControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteById4(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteById4(id, options);
+        async deleteById2(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteById2(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['LibraryControllerApi.deleteById4']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['TVSeasonsApi.deleteById2']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -359,10 +359,10 @@ export const LibraryControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteByIds4(requestBody: Array<string>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteByIds4(requestBody, options);
+        async deleteByIds2(requestBody: Array<string>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteByIds2(requestBody, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['LibraryControllerApi.deleteByIds4']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['TVSeasonsApi.deleteByIds2']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -370,10 +370,10 @@ export const LibraryControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async findAll4(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Library>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.findAll4(options);
+        async findAll2(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<TvSeason>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.findAll2(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['LibraryControllerApi.findAll4']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['TVSeasonsApi.findAll2']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -382,10 +382,10 @@ export const LibraryControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async findById4(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Library>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.findById4(id, options);
+        async findById2(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TvSeason>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.findById2(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['LibraryControllerApi.findById4']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['TVSeasonsApi.findById2']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -394,53 +394,53 @@ export const LibraryControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async findByIds4(requestBody: Array<string>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Library>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.findByIds4(requestBody, options);
+        async findByIds2(requestBody: Array<string>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<TvSeason>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.findByIds2(requestBody, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['LibraryControllerApi.findByIds4']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['TVSeasonsApi.findByIds2']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
-         * @param {string} id 
+         * @param {string} tvSeriesId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async scan(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.scan(id, options);
+        async findByTvSeries(tvSeriesId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<TvSeason>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.findByTvSeries(tvSeriesId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['LibraryControllerApi.scan']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['TVSeasonsApi.findByTvSeries']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
-         * @param {Library} library 
+         * @param {TvSeason} tvSeason 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async upsert4(library: Library, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Library>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.upsert4(library, options);
+        async upsert2(tvSeason: TvSeason, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TvSeason>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.upsert2(tvSeason, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['LibraryControllerApi.upsert4']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['TVSeasonsApi.upsert2']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
 };
 
 /**
- * LibraryControllerApi - factory interface
+ * TVSeasonsApi - factory interface
  */
-export const LibraryControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = LibraryControllerApiFp(configuration)
+export const TVSeasonsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = TVSeasonsApiFp(configuration)
     return {
         /**
          * 
-         * @param {Library} library 
+         * @param {TvSeason} tvSeason 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        create4(library: Library, options?: RawAxiosRequestConfig): AxiosPromise<Library> {
-            return localVarFp.create4(library, options).then((request) => request(axios, basePath));
+        create2(tvSeason: TvSeason, options?: RawAxiosRequestConfig): AxiosPromise<TvSeason> {
+            return localVarFp.create2(tvSeason, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -448,8 +448,8 @@ export const LibraryControllerApiFactory = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteById4(id: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
-            return localVarFp.deleteById4(id, options).then((request) => request(axios, basePath));
+        deleteById2(id: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.deleteById2(id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -457,16 +457,16 @@ export const LibraryControllerApiFactory = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteByIds4(requestBody: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<object> {
-            return localVarFp.deleteByIds4(requestBody, options).then((request) => request(axios, basePath));
+        deleteByIds2(requestBody: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.deleteByIds2(requestBody, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        findAll4(options?: RawAxiosRequestConfig): AxiosPromise<Array<Library>> {
-            return localVarFp.findAll4(options).then((request) => request(axios, basePath));
+        findAll2(options?: RawAxiosRequestConfig): AxiosPromise<Array<TvSeason>> {
+            return localVarFp.findAll2(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -474,8 +474,8 @@ export const LibraryControllerApiFactory = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        findById4(id: string, options?: RawAxiosRequestConfig): AxiosPromise<Library> {
-            return localVarFp.findById4(id, options).then((request) => request(axios, basePath));
+        findById2(id: string, options?: RawAxiosRequestConfig): AxiosPromise<TvSeason> {
+            return localVarFp.findById2(id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -483,42 +483,42 @@ export const LibraryControllerApiFactory = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        findByIds4(requestBody: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<Array<Library>> {
-            return localVarFp.findByIds4(requestBody, options).then((request) => request(axios, basePath));
+        findByIds2(requestBody: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<Array<TvSeason>> {
+            return localVarFp.findByIds2(requestBody, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {string} id 
+         * @param {string} tvSeriesId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        scan(id: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
-            return localVarFp.scan(id, options).then((request) => request(axios, basePath));
+        findByTvSeries(tvSeriesId: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<TvSeason>> {
+            return localVarFp.findByTvSeries(tvSeriesId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {Library} library 
+         * @param {TvSeason} tvSeason 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        upsert4(library: Library, options?: RawAxiosRequestConfig): AxiosPromise<Library> {
-            return localVarFp.upsert4(library, options).then((request) => request(axios, basePath));
+        upsert2(tvSeason: TvSeason, options?: RawAxiosRequestConfig): AxiosPromise<TvSeason> {
+            return localVarFp.upsert2(tvSeason, options).then((request) => request(axios, basePath));
         },
     };
 };
 
 /**
- * LibraryControllerApi - object-oriented interface
+ * TVSeasonsApi - object-oriented interface
  */
-export class LibraryControllerApi extends BaseAPI {
+export class TVSeasonsApi extends BaseAPI {
     /**
      * 
-     * @param {Library} library 
+     * @param {TvSeason} tvSeason 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public create4(library: Library, options?: RawAxiosRequestConfig) {
-        return LibraryControllerApiFp(this.configuration).create4(library, options).then((request) => request(this.axios, this.basePath));
+    public create2(tvSeason: TvSeason, options?: RawAxiosRequestConfig) {
+        return TVSeasonsApiFp(this.configuration).create2(tvSeason, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -527,8 +527,8 @@ export class LibraryControllerApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public deleteById4(id: string, options?: RawAxiosRequestConfig) {
-        return LibraryControllerApiFp(this.configuration).deleteById4(id, options).then((request) => request(this.axios, this.basePath));
+    public deleteById2(id: string, options?: RawAxiosRequestConfig) {
+        return TVSeasonsApiFp(this.configuration).deleteById2(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -537,8 +537,8 @@ export class LibraryControllerApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public deleteByIds4(requestBody: Array<string>, options?: RawAxiosRequestConfig) {
-        return LibraryControllerApiFp(this.configuration).deleteByIds4(requestBody, options).then((request) => request(this.axios, this.basePath));
+    public deleteByIds2(requestBody: Array<string>, options?: RawAxiosRequestConfig) {
+        return TVSeasonsApiFp(this.configuration).deleteByIds2(requestBody, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -546,8 +546,8 @@ export class LibraryControllerApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public findAll4(options?: RawAxiosRequestConfig) {
-        return LibraryControllerApiFp(this.configuration).findAll4(options).then((request) => request(this.axios, this.basePath));
+    public findAll2(options?: RawAxiosRequestConfig) {
+        return TVSeasonsApiFp(this.configuration).findAll2(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -556,8 +556,8 @@ export class LibraryControllerApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public findById4(id: string, options?: RawAxiosRequestConfig) {
-        return LibraryControllerApiFp(this.configuration).findById4(id, options).then((request) => request(this.axios, this.basePath));
+    public findById2(id: string, options?: RawAxiosRequestConfig) {
+        return TVSeasonsApiFp(this.configuration).findById2(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -566,28 +566,28 @@ export class LibraryControllerApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public findByIds4(requestBody: Array<string>, options?: RawAxiosRequestConfig) {
-        return LibraryControllerApiFp(this.configuration).findByIds4(requestBody, options).then((request) => request(this.axios, this.basePath));
+    public findByIds2(requestBody: Array<string>, options?: RawAxiosRequestConfig) {
+        return TVSeasonsApiFp(this.configuration).findByIds2(requestBody, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {string} id 
+     * @param {string} tvSeriesId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public scan(id: string, options?: RawAxiosRequestConfig) {
-        return LibraryControllerApiFp(this.configuration).scan(id, options).then((request) => request(this.axios, this.basePath));
+    public findByTvSeries(tvSeriesId: string, options?: RawAxiosRequestConfig) {
+        return TVSeasonsApiFp(this.configuration).findByTvSeries(tvSeriesId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {Library} library 
+     * @param {TvSeason} tvSeason 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public upsert4(library: Library, options?: RawAxiosRequestConfig) {
-        return LibraryControllerApiFp(this.configuration).upsert4(library, options).then((request) => request(this.axios, this.basePath));
+    public upsert2(tvSeason: TvSeason, options?: RawAxiosRequestConfig) {
+        return TVSeasonsApiFp(this.configuration).upsert2(tvSeason, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

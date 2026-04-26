@@ -21,9 +21,17 @@ export interface MediaMetadata {
     'id': string;
     'createdAt': string;
     'updatedAt'?: string;
-    'fileExtension'?: string;
     'videoCodec'?: string;
+    'videoBitDepth'?: number;
+    'videoLevel'?: number;
+    'videoWidth'?: number;
+    'videoHeight'?: number;
     'audioCodec'?: string;
+    'audioSamplerate'?: number;
+    'audioChannels'?: number;
+    'audioChannelLayout'?: string;
+    'bitrate'?: number;
+    'container'?: MediaMetadataContainerEnum;
     'sizeBytes'?: number;
     'durationSeconds'?: number;
     'framerate'?: number;
@@ -31,4 +39,23 @@ export interface MediaMetadata {
     'lastModified'?: string;
     'media'?: Media;
 }
+
+export const MediaMetadataContainerEnum = {
+    Mp4: 'MP4',
+    Mkv: 'MKV',
+    Webm: 'WEBM',
+    Avi: 'AVI',
+    MpegTs: 'MPEG_TS',
+    Mov: 'MOV',
+    Ogg: 'OGG',
+    Mp3: 'MP3',
+    Wav: 'WAV',
+    Flac: 'FLAC',
+    Aac: 'AAC',
+    Opus: 'OPUS',
+    Unknown: 'UNKNOWN'
+} as const;
+
+export type MediaMetadataContainerEnum = typeof MediaMetadataContainerEnum[keyof typeof MediaMetadataContainerEnum];
+
 

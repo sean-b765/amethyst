@@ -1,37 +1,38 @@
-# MediaApi
+# TVSeasonsApi
 
 All URIs are relative to *http://localhost:8080*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
-|[**create3**](#create3) | **POST** /api/media | |
-|[**deleteById3**](#deletebyid3) | **DELETE** /api/media/{id} | |
-|[**deleteByIds3**](#deletebyids3) | **DELETE** /api/media | |
-|[**findAll3**](#findall3) | **GET** /api/media | |
-|[**findById3**](#findbyid3) | **GET** /api/media/{id} | |
-|[**findByIds3**](#findbyids3) | **POST** /api/media/fetch | |
-|[**upsert3**](#upsert3) | **PUT** /api/media | |
+|[**create2**](#create2) | **POST** /api/seasons | |
+|[**deleteById2**](#deletebyid2) | **DELETE** /api/seasons/{id} | |
+|[**deleteByIds2**](#deletebyids2) | **DELETE** /api/seasons | |
+|[**findAll2**](#findall2) | **GET** /api/seasons | |
+|[**findById2**](#findbyid2) | **GET** /api/seasons/{id} | |
+|[**findByIds2**](#findbyids2) | **POST** /api/seasons/fetch | |
+|[**findByTvSeries**](#findbytvseries) | **GET** /api/seasons/{tvSeriesId}/seasons | |
+|[**upsert2**](#upsert2) | **PUT** /api/seasons | |
 
-# **create3**
-> Media create3(media)
+# **create2**
+> TvSeason create2(tvSeason)
 
 
 ### Example
 
 ```typescript
 import {
-    MediaApi,
+    TVSeasonsApi,
     Configuration,
-    Media
+    TvSeason
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new MediaApi(configuration);
+const apiInstance = new TVSeasonsApi(configuration);
 
-let media: Media; //
+let tvSeason: TvSeason; //
 
-const { status, data } = await apiInstance.create3(
-    media
+const { status, data } = await apiInstance.create2(
+    tvSeason
 );
 ```
 
@@ -39,12 +40,12 @@ const { status, data } = await apiInstance.create3(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **media** | **Media**|  | |
+| **tvSeason** | **TvSeason**|  | |
 
 
 ### Return type
 
-**Media**
+**TvSeason**
 
 ### Authorization
 
@@ -63,24 +64,24 @@ const { status, data } = await apiInstance.create3(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **deleteById3**
-> object deleteById3()
+# **deleteById2**
+> object deleteById2()
 
 
 ### Example
 
 ```typescript
 import {
-    MediaApi,
+    TVSeasonsApi,
     Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new MediaApi(configuration);
+const apiInstance = new TVSeasonsApi(configuration);
 
 let id: string; // (default to undefined)
 
-const { status, data } = await apiInstance.deleteById3(
+const { status, data } = await apiInstance.deleteById2(
     id
 );
 ```
@@ -113,24 +114,24 @@ const { status, data } = await apiInstance.deleteById3(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **deleteByIds3**
-> object deleteByIds3(requestBody)
+# **deleteByIds2**
+> object deleteByIds2(requestBody)
 
 
 ### Example
 
 ```typescript
 import {
-    MediaApi,
+    TVSeasonsApi,
     Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new MediaApi(configuration);
+const apiInstance = new TVSeasonsApi(configuration);
 
 let requestBody: Array<string>; //
 
-const { status, data } = await apiInstance.deleteByIds3(
+const { status, data } = await apiInstance.deleteByIds2(
     requestBody
 );
 ```
@@ -163,22 +164,22 @@ const { status, data } = await apiInstance.deleteByIds3(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **findAll3**
-> Array<Media> findAll3()
+# **findAll2**
+> Array<TvSeason> findAll2()
 
 
 ### Example
 
 ```typescript
 import {
-    MediaApi,
+    TVSeasonsApi,
     Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new MediaApi(configuration);
+const apiInstance = new TVSeasonsApi(configuration);
 
-const { status, data } = await apiInstance.findAll3();
+const { status, data } = await apiInstance.findAll2();
 ```
 
 ### Parameters
@@ -187,7 +188,7 @@ This endpoint does not have any parameters.
 
 ### Return type
 
-**Array<Media>**
+**Array<TvSeason>**
 
 ### Authorization
 
@@ -206,24 +207,24 @@ This endpoint does not have any parameters.
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **findById3**
-> Media findById3()
+# **findById2**
+> TvSeason findById2()
 
 
 ### Example
 
 ```typescript
 import {
-    MediaApi,
+    TVSeasonsApi,
     Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new MediaApi(configuration);
+const apiInstance = new TVSeasonsApi(configuration);
 
 let id: string; // (default to undefined)
 
-const { status, data } = await apiInstance.findById3(
+const { status, data } = await apiInstance.findById2(
     id
 );
 ```
@@ -237,7 +238,7 @@ const { status, data } = await apiInstance.findById3(
 
 ### Return type
 
-**Media**
+**TvSeason**
 
 ### Authorization
 
@@ -256,24 +257,24 @@ const { status, data } = await apiInstance.findById3(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **findByIds3**
-> Array<Media> findByIds3(requestBody)
+# **findByIds2**
+> Array<TvSeason> findByIds2(requestBody)
 
 
 ### Example
 
 ```typescript
 import {
-    MediaApi,
+    TVSeasonsApi,
     Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new MediaApi(configuration);
+const apiInstance = new TVSeasonsApi(configuration);
 
 let requestBody: Array<string>; //
 
-const { status, data } = await apiInstance.findByIds3(
+const { status, data } = await apiInstance.findByIds2(
     requestBody
 );
 ```
@@ -287,7 +288,7 @@ const { status, data } = await apiInstance.findByIds3(
 
 ### Return type
 
-**Array<Media>**
+**Array<TvSeason>**
 
 ### Authorization
 
@@ -306,26 +307,25 @@ const { status, data } = await apiInstance.findByIds3(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **upsert3**
-> Media upsert3(media)
+# **findByTvSeries**
+> Array<TvSeason> findByTvSeries()
 
 
 ### Example
 
 ```typescript
 import {
-    MediaApi,
-    Configuration,
-    Media
+    TVSeasonsApi,
+    Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new MediaApi(configuration);
+const apiInstance = new TVSeasonsApi(configuration);
 
-let media: Media; //
+let tvSeriesId: string; // (default to undefined)
 
-const { status, data } = await apiInstance.upsert3(
-    media
+const { status, data } = await apiInstance.findByTvSeries(
+    tvSeriesId
 );
 ```
 
@@ -333,12 +333,63 @@ const { status, data } = await apiInstance.upsert3(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **media** | **Media**|  | |
+| **tvSeriesId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
 
-**Media**
+**Array<TvSeason>**
+
+### Authorization
+
+[Authorization](../README.md#Authorization)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **upsert2**
+> TvSeason upsert2(tvSeason)
+
+
+### Example
+
+```typescript
+import {
+    TVSeasonsApi,
+    Configuration,
+    TvSeason
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new TVSeasonsApi(configuration);
+
+let tvSeason: TvSeason; //
+
+const { status, data } = await apiInstance.upsert2(
+    tvSeason
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **tvSeason** | **TvSeason**|  | |
+
+
+### Return type
+
+**TvSeason**
 
 ### Authorization
 

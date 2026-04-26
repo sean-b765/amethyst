@@ -32,6 +32,42 @@ export const HlsPlaylistControllerApiAxiosParamCreator = function (configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        generateHlsToken: async (mediaId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'mediaId' is not null or undefined
+            assertParamExists('generateHlsToken', 'mediaId', mediaId)
+            const localVarPath = `/api/playlist/{mediaId}`
+                .replace(`{${"mediaId"}}`, encodeURIComponent(String(mediaId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} mediaId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         generateMultiVariantPlaylist: async (mediaId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'mediaId' is not null or undefined
             assertParamExists('generateMultiVariantPlaylist', 'mediaId', mediaId)
@@ -66,14 +102,17 @@ export const HlsPlaylistControllerApiAxiosParamCreator = function (configuration
          * 
          * @param {string} mediaId 
          * @param {string} qualityProfile 
+         * @param {string} xHlsToken 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        generateVodPlaylist: async (mediaId: string, qualityProfile: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        generateVodPlaylist: async (mediaId: string, qualityProfile: string, xHlsToken: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'mediaId' is not null or undefined
             assertParamExists('generateVodPlaylist', 'mediaId', mediaId)
             // verify required parameter 'qualityProfile' is not null or undefined
             assertParamExists('generateVodPlaylist', 'qualityProfile', qualityProfile)
+            // verify required parameter 'xHlsToken' is not null or undefined
+            assertParamExists('generateVodPlaylist', 'xHlsToken', xHlsToken)
             const localVarPath = `/api/playlist/{mediaId}/{qualityProfile}`
                 .replace(`{${"mediaId"}}`, encodeURIComponent(String(mediaId)))
                 .replace(`{${"qualityProfile"}}`, encodeURIComponent(String(qualityProfile)));
@@ -93,6 +132,9 @@ export const HlsPlaylistControllerApiAxiosParamCreator = function (configuration
 
 
     
+            if (xHlsToken != null) {
+                localVarHeaderParameter['X-Hls-Token'] = String(xHlsToken);
+            }
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -117,6 +159,18 @@ export const HlsPlaylistControllerApiFp = function(configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        async generateHlsToken(mediaId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.generateHlsToken(mediaId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['HlsPlaylistControllerApi.generateHlsToken']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} mediaId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         async generateMultiVariantPlaylist(mediaId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.generateMultiVariantPlaylist(mediaId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
@@ -127,11 +181,12 @@ export const HlsPlaylistControllerApiFp = function(configuration?: Configuration
          * 
          * @param {string} mediaId 
          * @param {string} qualityProfile 
+         * @param {string} xHlsToken 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async generateVodPlaylist(mediaId: string, qualityProfile: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.generateVodPlaylist(mediaId, qualityProfile, options);
+        async generateVodPlaylist(mediaId: string, qualityProfile: string, xHlsToken: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.generateVodPlaylist(mediaId, qualityProfile, xHlsToken, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['HlsPlaylistControllerApi.generateVodPlaylist']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -151,6 +206,15 @@ export const HlsPlaylistControllerApiFactory = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        generateHlsToken(mediaId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.generateHlsToken(mediaId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} mediaId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         generateMultiVariantPlaylist(mediaId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.generateMultiVariantPlaylist(mediaId, options).then((request) => request(axios, basePath));
         },
@@ -158,11 +222,12 @@ export const HlsPlaylistControllerApiFactory = function (configuration?: Configu
          * 
          * @param {string} mediaId 
          * @param {string} qualityProfile 
+         * @param {string} xHlsToken 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        generateVodPlaylist(mediaId: string, qualityProfile: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
-            return localVarFp.generateVodPlaylist(mediaId, qualityProfile, options).then((request) => request(axios, basePath));
+        generateVodPlaylist(mediaId: string, qualityProfile: string, xHlsToken: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.generateVodPlaylist(mediaId, qualityProfile, xHlsToken, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -177,6 +242,16 @@ export class HlsPlaylistControllerApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
+    public generateHlsToken(mediaId: string, options?: RawAxiosRequestConfig) {
+        return HlsPlaylistControllerApiFp(this.configuration).generateHlsToken(mediaId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} mediaId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
     public generateMultiVariantPlaylist(mediaId: string, options?: RawAxiosRequestConfig) {
         return HlsPlaylistControllerApiFp(this.configuration).generateMultiVariantPlaylist(mediaId, options).then((request) => request(this.axios, this.basePath));
     }
@@ -185,11 +260,12 @@ export class HlsPlaylistControllerApi extends BaseAPI {
      * 
      * @param {string} mediaId 
      * @param {string} qualityProfile 
+     * @param {string} xHlsToken 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public generateVodPlaylist(mediaId: string, qualityProfile: string, options?: RawAxiosRequestConfig) {
-        return HlsPlaylistControllerApiFp(this.configuration).generateVodPlaylist(mediaId, qualityProfile, options).then((request) => request(this.axios, this.basePath));
+    public generateVodPlaylist(mediaId: string, qualityProfile: string, xHlsToken: string, options?: RawAxiosRequestConfig) {
+        return HlsPlaylistControllerApiFp(this.configuration).generateVodPlaylist(mediaId, qualityProfile, xHlsToken, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
