@@ -41,7 +41,7 @@ public class PlaylistManager {
   public String generateVodPlaylist(Media media, QualityProfiles.QualityProfile qualityProfile) {
     KeyframeData keyframeData = keyframeExtractor.getKeyframeData(media.getPath());
     return this.generateVodPlaylist(
-        String.format("/api/video/%s/%s", media.getId(), qualityProfile.getName()),
+        String.format("/api/video/hls/%s/%s", media.getId(), qualityProfile.getName()),
         keyframeData);
   }
 

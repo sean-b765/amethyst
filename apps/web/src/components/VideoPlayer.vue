@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Slider } from '@/components/ui/slider'
 import { authApi } from '@/lib/api'
+import { canDirectPlay } from '@/lib/playback'
 import { formatSeconds, getImage, supportsPiP } from '@/lib/utils'
 import { usePlayerStore } from '@/stores/player'
 import { Media } from '@hls-app/sdk'
@@ -75,6 +76,11 @@ const hoverPercent = computed(() => {
 
 const url = computed(() => {
   if (media) return import.meta.env.VITE_BASE_URL + '/api/playlist/' + media.id
+  else return ''
+})
+
+const directPlayUrl = computed(() => {
+  if (media) return import.meta.env.VITE_BASE_URL + '/api/video/direct/' + media.id
   else return ''
 })
 
@@ -199,69 +205,80 @@ function registerPlayerStateListeners() {
   }
 }
 
-function start() {
+async function start() {
   if (player.value == null) return
+  const vid = player.value
+  const canClientPlayNatively = await canDirectPlay(media)
 
-  if (Hls.isSupported()) {
-    hls = new Hls({
-      // SOURCE by default
-      startLevel: 0,
-      fragLoadingMaxRetry: 5,
-      fragLoadingRetryDelay: 1000,
-      fragLoadingTimeOut: 20_000,
-      levelLoadingMaxRetry: 3,
-      manifestLoadingMaxRetry: 3,
-      maxBufferHole: 0.5,
-      xhrSetup(xhr) {
-        xhr.withCredentials = true
-        xhr.setRequestHeader('Authorization', localStorage.getItem('access_token') ?? '')
-        const hlsToken = sessionStorage.getItem('hls_token') ?? ''
-        if (hlsToken) xhr.setRequestHeader('X-Hls-Token', hlsToken)
-      },
-    })
-
-    hls.on(Hls.Events.MANIFEST_LOADED, (event, data) => {
-      const details = data.networkDetails as XMLHttpRequest
-      const hlsToken = details.getResponseHeader('X-Hls-Token')
-      if (!hlsToken) return
-      sessionStorage.setItem('hls_token', hlsToken)
-      console.log('loaded')
-    })
-    hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-      qualities.value = data.levels
-      setQuality(0)
-      // Set currentTime
-      if (player.value) player.value.currentTime = currentTime.value
-    })
-
-    hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-      hls.loadSource(url.value)
-    })
-    hls.on(Hls.Events.LEVEL_LOADED, () => {
+  if (canClientPlayNatively) {
+    vid.src = directPlayUrl.value
+    vid.onloadedmetadata = () => {
       loaded.value = true
-    })
-    hls.on(Hls.Events.ERROR, async function (event, data) {
-      if (data.response?.code === 403) {
-        // Access was denied. Try to generate a new token
-        await authApi.generateHlsToken(media.id)
-      }
-    })
-  } else if (player.value.canPlayType('application/vnd.apple.mpegurl') !== '') {
-    player.value.src = url.value
+      if (player.value) player.value.currentTime = currentTime.value
+    }
   } else {
-    throw new Error('hls not supported')
+    if (Hls.isSupported()) {
+      hls = new Hls({
+        // SOURCE by default
+        startLevel: 0,
+        fragLoadingMaxRetry: 5,
+        fragLoadingRetryDelay: 1000,
+        fragLoadingTimeOut: 20_000,
+        levelLoadingMaxRetry: 3,
+        manifestLoadingMaxRetry: 3,
+        maxBufferHole: 0.5,
+        xhrSetup(xhr) {
+          xhr.withCredentials = true
+          xhr.setRequestHeader('Authorization', localStorage.getItem('access_token') ?? '')
+          const hlsToken = sessionStorage.getItem('hls_token') ?? ''
+          if (hlsToken) xhr.setRequestHeader('X-Hls-Token', hlsToken)
+        },
+      })
+
+      hls.on(Hls.Events.MANIFEST_LOADED, (_event, data) => {
+        const details = data.networkDetails as XMLHttpRequest
+        const hlsToken = details.getResponseHeader('X-Hls-Token')
+        if (!hlsToken) return
+        sessionStorage.setItem('hls_token', hlsToken)
+        console.log('loaded')
+      })
+      hls.on(Hls.Events.MANIFEST_PARSED, function (_event, data) {
+        qualities.value = data.levels
+        setQuality(0)
+        if (player.value) player.value.currentTime = currentTime.value
+      })
+
+      hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+        hls.loadSource(url.value)
+      })
+      hls.on(Hls.Events.LEVEL_LOADED, () => {
+        loaded.value = true
+      })
+      hls.on(Hls.Events.ERROR, async function (_event, data) {
+        if (data.response?.code === 403) {
+          await authApi.generateHlsToken(media.id)
+        }
+      })
+
+      hls.attachMedia(vid)
+    } else if (vid.canPlayType('application/vnd.apple.mpegurl') !== '') {
+      vid.src = url.value
+    } else {
+      throw new Error('hls not supported')
+    }
   }
-  hls.attachMedia(player.value)
 }
 
-onMounted(() => {
-  start()
+onMounted(async () => {
+  await start()
   registerPlayerStateListeners()
 })
 
 onBeforeUnmount(() => {
-  hls.stopLoad()
-  hls.destroy()
+  if (hls) {
+    hls.stopLoad()
+    hls.destroy()
+  }
   localStorage.setItem(`currentTime_${media.id}`, currentTime.value.toString())
 })
 </script>

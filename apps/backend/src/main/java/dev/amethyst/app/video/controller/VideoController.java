@@ -4,7 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.ResourceRegion;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpRange;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,9 +31,12 @@ import dev.amethyst.app.transcode.service.TranscodeManager;
 import dev.amethyst.app.video.model.QualityProfiles;
 import dev.amethyst.app.video.model.QualityProfiles.QualityProfile;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -53,8 +60,38 @@ public class VideoController {
 
   private Map<String, Media> mediaCache = new ConcurrentHashMap<>();
 
-  @GetMapping("/{mediaId}/{qualityProfile}/{segmentName}")
-  public DeferredResult<ResponseEntity<Resource>> getVideoSegment(
+  @GetMapping("/direct/{mediaId}")
+  public ResponseEntity<ResourceRegion> directPlay(@PathVariable String mediaId, @RequestHeader HttpHeaders headers) {
+    List<HttpRange> ranges = headers.getRange();
+    if (ranges.isEmpty())
+      return ResponseEntity.badRequest().build();
+
+    Optional<Media> media = this.mediaService.findById(mediaId);
+    if (media.isEmpty())
+      return ResponseEntity.notFound().build();
+
+    Resource resource = new FileSystemResource(media.get().getPath());
+
+    long contentLength;
+    try {
+      contentLength = resource.contentLength();
+    } catch (IOException e) {
+      return ResponseEntity.internalServerError().build();
+    }
+
+    HttpRange range = ranges.get(0);
+    long start = range.getRangeStart(contentLength);
+    long end = range.getRangeEnd(contentLength);
+    ResourceRegion region = new ResourceRegion(resource, start, end - start + 1);
+
+    return ResponseEntity
+        .status(HttpStatus.PARTIAL_CONTENT)
+        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+        .body(region);
+  }
+
+  @GetMapping("/hls/{mediaId}/{qualityProfile}/{segmentName}")
+  public DeferredResult<ResponseEntity<Resource>> getHlsSegment(
       @PathVariable String mediaId,
       @PathVariable String qualityProfile,
       @PathVariable String segmentName,
