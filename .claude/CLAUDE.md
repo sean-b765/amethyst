@@ -32,3 +32,5 @@ A Nx monorepo
 
 - [apps/web]: camelCase naming always as per TypeScript standards
 - [apps/backend]: camelCase java naming always
+- [apps/backend]: uses layered architecture, controller -> service -> repository
+- on the topic of media transcoding and playback, see [docs/playback]
