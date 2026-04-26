@@ -2,6 +2,7 @@
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Slider } from '@/components/ui/slider'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { authApi } from '@/lib/api'
 import { canDirectPlay } from '@/lib/playback'
 import { formatSeconds, getImage, supportsPiP } from '@/lib/utils'
@@ -9,6 +10,7 @@ import { usePlayerStore } from '@/stores/player'
 import { Media } from '@hls-app/sdk'
 import Hls, { type Level } from 'hls.js'
 import {
+  Info,
   Maximize,
   MoveLeft,
   PauseIcon,
@@ -35,6 +37,7 @@ const { state } = storeToRefs(playerStore)
 const { media } = defineProps<{ media: Media }>()
 
 const loaded = ref(false)
+const isDirectPlay = ref(false)
 const qualities = ref<Level[]>([])
 const currentQuality = ref<number>(0)
 const volume = ref([parseFloat(localStorage.getItem('volume') ?? '1')])
@@ -124,14 +127,10 @@ function playPauseToggle() {
 }
 
 function fullscreen() {
-  const vid = player.value
-  if (vid == null) return
-  const videoContainer = vid.parentElement!
-
-  if (document.fullscreenElement === videoContainer) {
+  if (document.fullscreenElement) {
     document.exitFullscreen()
   } else {
-    videoContainer.requestFullscreen()
+    document.documentElement.requestFullscreen()
   }
 }
 
@@ -209,6 +208,8 @@ async function start() {
   if (player.value == null) return
   const vid = player.value
   const canClientPlayNatively = await canDirectPlay(media)
+
+  isDirectPlay.value = canClientPlayNatively
 
   if (canClientPlayNatively) {
     vid.src = directPlayUrl.value
@@ -297,19 +298,37 @@ onBeforeUnmount(() => {
       @click.capture="playPauseToggle"
       @dblclick="fullscreen"
     ></video>
+    <!-- Pause overlay -->
+    <div class="pause-overlay absolute inset-0 z-5 pointer-events-none"></div>
+
     <!-- Back button -->
     <Button
       size="icon-lg"
       variant="ghost"
-      class="show-hover-paused absolute cursor-pointer rounded-full z-10 bg-transparent hover:bg-transparent"
+      class="show-hover-paused absolute cursor-pointer rounded-full z-20 bg-transparent hover:bg-transparent"
       @click="() => router.back()"
     >
       <MoveLeft color="white" />
     </Button>
 
+    <!-- Playback mode indicator -->
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger
+          class="show-hover-paused absolute top-2 right-2 z-20 text-white/60 hover:text-white transition-colors"
+        >
+          <Info :size="16" />
+        </TooltipTrigger>
+        <TooltipContent side="left">
+          <span v-if="isDirectPlay">Direct play</span>
+          <span v-else>Transcoding...</span>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+
     <!-- Fullscreen overview -->
     <div
-      class="show-hover-paused w-full h-auto flex pointer-events-none absolute overview gap-7 pt-10 pl-4 sm:pl-14 overflow-hidden opacity-0 group-hover:opacity-100"
+      class="show-hover-paused w-full h-auto flex pointer-events-none absolute overview gap-7 pt-10 pl-4 sm:pl-14 overflow-hidden opacity-0 group-hover:opacity-100 z-10"
     >
       <img
         v-if="media.info?.thumbnail"
@@ -319,7 +338,9 @@ onBeforeUnmount(() => {
       />
       <div class="flex flex-col gap-3 mt-2 pr-4">
         <!-- Overview -->
-        <span class="w-full text-wrap font-bold text-sm text-white">
+        <span
+          class="w-full text-wrap font-bold text-sm text-white text-shadow-xs text-shadow-black"
+        >
           {{ media?.info?.name }}
         </span>
         <span class="w-full text-wrap text-xs text-white text-shadow-xs text-shadow-black max-w-xl">
@@ -337,7 +358,7 @@ onBeforeUnmount(() => {
     <!-- Play/Pause/jump forwards-backwards -->
     <div
       v-if="loaded"
-      class="play-pause show-hover-paused absolute flex items-center gap-2 left-1/2 top-1/2 -translate-1/2"
+      class="play-pause show-hover-paused absolute flex items-center gap-2 left-1/2 top-1/2 -translate-1/2 z-20"
     >
       <Button
         variant="ghost"
@@ -380,7 +401,7 @@ onBeforeUnmount(() => {
 
     <!-- Controls -->
     <div
-      class="controls show-hover-paused absolute bottom-0 w-full flex gap-3 justify-between items-center p-2 pl-4 pr-2 rounded-md"
+      class="controls show-hover-paused absolute bottom-0 w-full flex gap-3 justify-between items-center p-2 pl-4 pr-2 rounded-md z-20"
     >
       <div
         class="track flex gap-4 w-full items-center transition-opacity duration-200"
@@ -452,7 +473,7 @@ onBeforeUnmount(() => {
           </PopoverContent>
         </Popover>
         <!-- Quality -->
-        <Popover>
+        <Popover v-if="!!hls">
           <PopoverTrigger>
             <Button size="icon-sm" variant="ghost">
               <SlidersVertical :size="16" />
@@ -511,6 +532,10 @@ onBeforeUnmount(() => {
     opacity: 0;
     transition: opacity 1s cubic-bezier(0.19, 1, 0.22, 1);
   }
+  .pause-overlay {
+    background: transparent;
+    transition: background 0.4s ease;
+  }
   &:hover,
   &.paused {
     .show-hover-paused {
@@ -520,6 +545,9 @@ onBeforeUnmount(() => {
   &.paused {
     .show-paused {
       opacity: 1;
+    }
+    .pause-overlay {
+      background: rgba(0, 0, 0, 0.35);
     }
   }
 }
