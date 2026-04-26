@@ -31,6 +31,8 @@ A Nx monorepo
 ## Conventions
 
 - [apps/web]: camelCase naming always as per TypeScript standards
+- [apps/web/src/components/ui]: shadcn is meant to be a functionally-complete UI component library. try to avoid modifying components in this folder, unless absolutely necessary
+- [apps/web]: icons are provided by Lucide.dev
 - [apps/backend]: camelCase java naming always
 - [apps/backend]: uses layered architecture, controller -> service -> repository
 - on the topic of media transcoding and playback, see [docs/playback]
