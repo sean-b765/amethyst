@@ -17,9 +17,10 @@
 export * from './api/auth-api';
 export * from './api/file-system-api';
 export * from './api/hls-playlist-controller-api';
-export * from './api/hls-video-controller-api';
 export * from './api/library-controller-api';
 export * from './api/media-api';
+export * from './api/tvseasons-api';
 export * from './api/tvseries-api';
 export * from './api/user-api';
+export * from './api/video-controller-api';
 

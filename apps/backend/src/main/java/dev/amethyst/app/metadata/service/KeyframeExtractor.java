@@ -1,10 +1,11 @@
-package dev.amethyst.app.lib.service;
+package dev.amethyst.app.metadata.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import dev.amethyst.app.playlist.model.KeyframeData;
+import dev.amethyst.app.lib.service.FfmpegService;
+import dev.amethyst.app.metadata.model.KeyframeData;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class KeyframeExtractor {
         "-skip_frame", "nokey",
         "-select_streams", "v:0",
         "-show_entries", "format=duration",
-        "-show_entries", "packet=pts_time",
+        "-show_entries", "packet=pts_time,flags",
         "-of", "json",
         inputFile);
     if (process == null)
@@ -75,6 +76,9 @@ public class KeyframeExtractor {
 
     JsonNode packets = root.path("packets");
     for (JsonNode pkt : packets) {
+      String flags = pkt.path("flags").asText("");
+      if (!flags.contains("K"))
+        continue; // K = keyframe
       double pts = pkt.path("pts_time").asDouble();
       keyframeData.getPositions().add(pts);
     }

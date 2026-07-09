@@ -6,7 +6,7 @@
     "dev": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "mvnw spring-boot:run -Dspring-boot.run.jvmArguments=\"-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5555\"",
+        "command": "./mvnw spring-boot:run -Dspring-boot.run.jvmArguments=\"-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5555\"",
         "cwd": "apps/backend",
         "envFile": "apps/backend/.env"
       }
@@ -14,12 +14,13 @@
     "test": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "mvnw test",
-        "cwd": "apps/backend"
+        "command": "./mvnw test",
+        "cwd": "apps/backend",
+        "envFile": "apps/backend/.env"
       }
     },
     "build": {
-      "command": "mvnw package",
+      "command": "./mvnw package",
       "cwd": "apps/backend",
       "outputs": [
         "apps/backend/target"

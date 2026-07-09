@@ -2,17 +2,22 @@
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Slider } from '@/components/ui/slider'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { authApi } from '@/lib/api'
+import { canDirectPlay } from '@/lib/playback'
 import { formatSeconds, getImage, supportsPiP } from '@/lib/utils'
 import { usePlayerStore } from '@/stores/player'
 import { Media } from '@hls-app/sdk'
-import Hls, { Level } from 'hls.js'
+import Hls, { type Level } from 'hls.js'
 import {
+  Info,
   Maximize,
   MoveLeft,
   PauseIcon,
   PictureInPicture2,
   PlayIcon,
+  RotateCcw,
+  RotateCw,
   SlidersVertical,
   Volume,
   Volume1,
@@ -32,9 +37,10 @@ const { state } = storeToRefs(playerStore)
 const { media } = defineProps<{ media: Media }>()
 
 const loaded = ref(false)
+const isDirectPlay = ref(false)
 const qualities = ref<Level[]>([])
+const currentQuality = ref<number>(0)
 const volume = ref([parseFloat(localStorage.getItem('volume') ?? '1')])
-const currentQuality = ref(0)
 const duration = ref(0)
 const currentTime = ref(parseFloat(localStorage.getItem(`currentTime_${media.id}`) ?? '0'))
 const buffered = ref(0)
@@ -76,9 +82,10 @@ const url = computed(() => {
   else return ''
 })
 
-function setQuality(level: number) {
-  hls.currentLevel = level
-}
+const directPlayUrl = computed(() => {
+  if (media) return import.meta.env.VITE_BASE_URL + '/api/video/direct/' + media.id
+  else return ''
+})
 
 function getSeekPercent(event: MouseEvent) {
   const el = event.currentTarget as HTMLElement
@@ -91,7 +98,18 @@ function onSeek(event: MouseEvent) {
   if (!player.value || !duration.value) return
   const percent = getSeekPercent(event)
   const seekTime = (percent / 100) * duration.value
-  playerStore.seek(seekTime)
+  player.value!.currentTime = seekTime
+  // playerStore.seek(seekTime)
+}
+
+function forwards() {
+  const time = player.value!.currentTime ?? 0
+  player.value!.currentTime = Math.min(duration.value, time + 15)
+}
+
+function backwards() {
+  const time = player.value!.currentTime ?? 0
+  player.value!.currentTime = Math.max(0, time - 15)
 }
 
 function onHover(event: MouseEvent) {
@@ -109,15 +127,36 @@ function playPauseToggle() {
 }
 
 function fullscreen() {
-  const vid = player.value
-  if (vid == null) return
-  const videoContainer = vid.parentElement!
-
-  if (document.fullscreenElement === videoContainer) {
+  if (document.fullscreenElement) {
     document.exitFullscreen()
   } else {
-    videoContainer.requestFullscreen()
+    document.documentElement.requestFullscreen()
   }
+}
+
+function getQualityName(level: number) {
+  if (level === -1) return 'Auto'
+  const theLevel = qualities.value.at(level)
+  if (!theLevel) return 'Unknown'
+  if (theLevel.url.some((url) => url.includes('SOURCE'))) return 'Source'
+  else return `${theLevel.height}p`
+}
+
+function setQuality(level: number) {
+  if (!qualities.value) return
+
+  if (level == -1) {
+    // Auto selected
+    currentQuality.value = level
+    hls.currentLevel = level
+    return
+  }
+
+  const newLevel = qualities.value.at(level)
+  if (!newLevel) return
+
+  currentQuality.value = level
+  hls.currentLevel = level
 }
 
 function pictureInPicture() {
@@ -165,71 +204,82 @@ function registerPlayerStateListeners() {
   }
 }
 
-function start() {
+async function start() {
   if (player.value == null) return
+  const vid = player.value
+  const canClientPlayNatively = await canDirectPlay(media)
 
-  if (Hls.isSupported()) {
-    hls = new Hls({
-      fragLoadingMaxRetry: 5,
-      fragLoadingRetryDelay: 1000,
-      fragLoadingTimeOut: 20_000,
-      levelLoadingMaxRetry: 3,
-      manifestLoadingMaxRetry: 3,
-      maxBufferHole: 0.5,
-      xhrSetup(xhr) {
-        xhr.withCredentials = true
-        xhr.setRequestHeader('Authorization', localStorage.getItem('access_token') ?? '')
-        const hlsToken = sessionStorage.getItem('hls_token') ?? ''
-        if (hlsToken) xhr.setRequestHeader('X-Hls-Token', hlsToken)
-      },
-    })
+  isDirectPlay.value = canClientPlayNatively
 
-    hls.on(Hls.Events.MANIFEST_LOADED, (event, data) => {
-      const details = data.networkDetails as XMLHttpRequest
-      const hlsToken = details.getResponseHeader('X-Hls-Token')
-      if (!hlsToken) return
-      sessionStorage.setItem('hls_token', hlsToken)
-      console.log('loaded')
-    })
+  if (canClientPlayNatively) {
+    vid.src = directPlayUrl.value
+    vid.onloadedmetadata = () => {
+      loaded.value = true
+      if (player.value) player.value.currentTime = currentTime.value
+    }
+  } else {
+    if (Hls.isSupported()) {
+      hls = new Hls({
+        // SOURCE by default
+        startLevel: 0,
+        fragLoadingMaxRetry: 5,
+        fragLoadingRetryDelay: 1000,
+        fragLoadingTimeOut: 20_000,
+        levelLoadingMaxRetry: 3,
+        manifestLoadingMaxRetry: 3,
+        maxBufferHole: 0.5,
+        xhrSetup(xhr) {
+          xhr.withCredentials = true
+          xhr.setRequestHeader('Authorization', localStorage.getItem('access_token') ?? '')
+          const hlsToken = sessionStorage.getItem('hls_token') ?? ''
+          if (hlsToken) xhr.setRequestHeader('X-Hls-Token', hlsToken)
+        },
+      })
 
-    hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-      hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-        hls.currentLevel = 0
-        hls.nextLevel = 0
-        hls.loadLevel = 0
+      hls.on(Hls.Events.MANIFEST_LOADED, (_event, data) => {
+        const details = data.networkDetails as XMLHttpRequest
+        const hlsToken = details.getResponseHeader('X-Hls-Token')
+        if (!hlsToken) return
+        sessionStorage.setItem('hls_token', hlsToken)
+        console.log('loaded')
+      })
+      hls.on(Hls.Events.MANIFEST_PARSED, function (_event, data) {
         qualities.value = data.levels
-        currentQuality.value = hls.currentLevel
-        // Set currentTime
+        setQuality(0)
         if (player.value) player.value.currentTime = currentTime.value
       })
 
-      hls.loadSource(url.value)
-    })
-    hls.on(Hls.Events.LEVEL_LOADED, () => {
-      loaded.value = true
-    })
-    hls.on(Hls.Events.ERROR, async function (event, data) {
-      if (data.response?.code === 403) {
-        // Access was denied. Try to generate a new token
-        await authApi.generateHlsToken(media.id)
-      }
-    })
-  } else if (player.value.canPlayType('application/vnd.apple.mpegurl') !== '') {
-    player.value.src = url.value
-  } else {
-    throw new Error('hls not supported')
+      hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+        hls.loadSource(url.value)
+      })
+      hls.on(Hls.Events.LEVEL_LOADED, () => {
+        loaded.value = true
+      })
+      hls.on(Hls.Events.ERROR, async function (_event, data) {
+        if (data.response?.code === 403) {
+          await authApi.generateHlsToken(media.id)
+        }
+      })
+
+      hls.attachMedia(vid)
+    } else if (vid.canPlayType('application/vnd.apple.mpegurl') !== '') {
+      vid.src = url.value
+    } else {
+      throw new Error('hls not supported')
+    }
   }
-  hls.attachMedia(player.value)
 }
 
-onMounted(() => {
-  start()
+onMounted(async () => {
+  await start()
   registerPlayerStateListeners()
 })
 
 onBeforeUnmount(() => {
-  hls.stopLoad()
-  hls.destroy()
+  if (hls) {
+    hls.stopLoad()
+    hls.destroy()
+  }
   localStorage.setItem(`currentTime_${media.id}`, currentTime.value.toString())
 })
 </script>
@@ -248,19 +298,37 @@ onBeforeUnmount(() => {
       @click.capture="playPauseToggle"
       @dblclick="fullscreen"
     ></video>
+    <!-- Pause overlay -->
+    <div class="pause-overlay absolute inset-0 z-5 pointer-events-none"></div>
+
     <!-- Back button -->
     <Button
       size="icon-lg"
       variant="ghost"
-      class="show-hover-paused absolute cursor-pointer rounded-full z-10 bg-transparent hover:bg-transparent"
+      class="show-hover-paused absolute cursor-pointer rounded-full z-20 bg-transparent hover:bg-transparent"
       @click="() => router.back()"
     >
       <MoveLeft color="white" />
     </Button>
 
+    <!-- Playback mode indicator -->
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger
+          class="show-hover-paused absolute top-2 right-2 z-20 text-white/60 hover:text-white transition-colors"
+        >
+          <Info :size="16" />
+        </TooltipTrigger>
+        <TooltipContent side="left">
+          <span v-if="isDirectPlay">Direct play</span>
+          <span v-else>Transcoding...</span>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+
     <!-- Fullscreen overview -->
     <div
-      class="show-hover-paused w-full h-auto flex pointer-events-none absolute overview gap-7 pt-10 pl-4 sm:pl-14 overflow-hidden opacity-0 group-hover:opacity-100"
+      class="show-hover-paused w-full h-auto flex pointer-events-none absolute overview gap-7 pt-10 pl-4 sm:pl-14 overflow-hidden opacity-0 group-hover:opacity-100 z-10"
     >
       <img
         v-if="media.info?.thumbnail"
@@ -270,7 +338,9 @@ onBeforeUnmount(() => {
       />
       <div class="flex flex-col gap-3 mt-2 pr-4">
         <!-- Overview -->
-        <span class="w-full text-wrap font-bold text-sm text-white">
+        <span
+          class="w-full text-wrap font-bold text-sm text-white text-shadow-xs text-shadow-black"
+        >
           {{ media?.info?.name }}
         </span>
         <span class="w-full text-wrap text-xs text-white text-shadow-xs text-shadow-black max-w-xl">
@@ -288,12 +358,20 @@ onBeforeUnmount(() => {
     <!-- Play/Pause/jump forwards-backwards -->
     <div
       v-if="loaded"
-      class="play-pause show-hover-paused absolute flex left-1/2 top-1/2 -translate-1/2"
+      class="play-pause show-hover-paused absolute flex items-center gap-2 left-1/2 top-1/2 -translate-1/2 z-20"
     >
       <Button
         variant="ghost"
+        size="icon-sm"
+        class="cursor-pointer hover:bg-muted/10 rounded-full"
+        @click="backwards"
+      >
+        <RotateCcw color="white" />
+      </Button>
+      <Button
+        variant="ghost"
         style="height: 48px; width: 48px"
-        class="cursor-pointer rounded-full flex justify-center hover:bg-transparent"
+        class="cursor-pointer rounded-full flex justify-center hover:bg-muted/10"
         @click="playPauseToggle"
       >
         <PlayIcon
@@ -311,11 +389,19 @@ onBeforeUnmount(() => {
           stroke-opacity="0"
         />
       </Button>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        class="cursor-pointer hover:bg-muted/10 rounded-full"
+        @click="forwards"
+      >
+        <RotateCw color="white" />
+      </Button>
     </div>
 
     <!-- Controls -->
     <div
-      class="controls show-hover-paused absolute bottom-0 w-full flex gap-3 justify-between items-center p-2 pl-4 pr-2 rounded-md"
+      class="controls show-hover-paused absolute bottom-0 w-full flex gap-3 justify-between items-center p-2 pl-4 pr-2 rounded-md z-20"
     >
       <div
         class="track flex gap-4 w-full items-center transition-opacity duration-200"
@@ -387,7 +473,7 @@ onBeforeUnmount(() => {
           </PopoverContent>
         </Popover>
         <!-- Quality -->
-        <Popover>
+        <Popover v-if="!!hls">
           <PopoverTrigger>
             <Button size="icon-sm" variant="ghost">
               <SlidersVertical :size="16" />
@@ -399,11 +485,26 @@ onBeforeUnmount(() => {
             :side-offset="10"
           >
             <span
-              v-for="quality of qualities"
-              :key="quality.id"
               class="truncate text-sm p-1 px-2 rounded-xs text-white cursor-pointer hover:bg-muted/20"
+              :class="{
+                'bg-muted/30': currentQuality === -1,
+                'hover:bg-muted/20': currentQuality === -1,
+              }"
+              @click="() => setQuality(-1)"
             >
-              {{ quality.height }}p
+              {{ getQualityName(-1) }}
+            </span>
+            <span
+              v-for="(quality, index) of qualities"
+              :key="quality.id"
+              class="truncate text-sm p-1 px-2 rounded-xs text-white cursor-pointer duration-150"
+              :class="{
+                'bg-muted/30': currentQuality === index,
+                'hover:bg-muted/20': currentQuality === index,
+              }"
+              @click="() => setQuality(index)"
+            >
+              {{ getQualityName(index) }}
             </span>
           </PopoverContent>
         </Popover>
@@ -431,6 +532,10 @@ onBeforeUnmount(() => {
     opacity: 0;
     transition: opacity 1s cubic-bezier(0.19, 1, 0.22, 1);
   }
+  .pause-overlay {
+    background: transparent;
+    transition: background 0.4s ease;
+  }
   &:hover,
   &.paused {
     .show-hover-paused {
@@ -440,6 +545,9 @@ onBeforeUnmount(() => {
   &.paused {
     .show-paused {
       opacity: 1;
+    }
+    .pause-overlay {
+      background: rgba(0, 0, 0, 0.35);
     }
   }
 }

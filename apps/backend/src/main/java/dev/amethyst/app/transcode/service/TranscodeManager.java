@@ -11,12 +11,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dev.amethyst.app.filesystem.service.FileSystemService;
 import dev.amethyst.app.lib.service.FfmpegService;
@@ -36,8 +34,6 @@ public class TranscodeManager {
   @Autowired
   @Getter
   private FileSystemService fileSystemService;
-  @Autowired
-  private ObjectMapper objectMapper;
 
   private final ExecutorService threadPool = Executors.newCachedThreadPool();
   /**
@@ -47,21 +43,6 @@ public class TranscodeManager {
   private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
   private final ConcurrentHashMap<String, TranscodeWorkerHandle> workerPool = new ConcurrentHashMap<>();
   private final Set<Process> ffmpegProcesses = ConcurrentHashMap.newKeySet();
-
-  private String getWorkerKey(TranscodeJob transcodeJob) {
-    String tenant = "";
-    if (transcodeJob.getRoomCode() == null)
-      tenant = transcodeJob.getUserId();
-    else
-      tenant = transcodeJob.getRoomCode();
-
-    return StringUtils.joinWith(
-        ":",
-        transcodeJob.getType().name(),
-        transcodeJob.getMedia().getId(),
-        transcodeJob.getQuality().getName(),
-        tenant);
-  }
 
   @PreDestroy
   public void shutdown() {
@@ -88,7 +69,7 @@ public class TranscodeManager {
         if (Files.exists(segmentPath)) {
           segmentReadyFuture.complete(null);
         } else if (System.currentTimeMillis() - start >= timeoutMs) {
-          segmentReadyFuture.completeExceptionally(new Exception("File Not Found"));
+          segmentReadyFuture.completeExceptionally(new TimeoutException("Segment not found after " + timeoutMs + "ms"));
         }
       } catch (Exception ex) {
         segmentReadyFuture.completeExceptionally(ex);
@@ -100,7 +81,7 @@ public class TranscodeManager {
   }
 
   public Future<?> ensureWorker(TranscodeJob transcodeJob) {
-    String workerKey = this.getWorkerKey(transcodeJob);
+    String workerKey = transcodeJob.getWorkerKey();
 
     System.out.println("[STATUS]: " + this.workerPool.size() + " workers running");
     return workerPool
@@ -127,7 +108,7 @@ public class TranscodeManager {
    * Call if seeking to kill ffmpeg process thread
    */
   public void stopWorker(TranscodeJob transcodeJob) {
-    String workerKey = this.getWorkerKey(transcodeJob);
+    String workerKey = transcodeJob.getWorkerKey();
     TranscodeWorkerHandle handle = workerPool.remove(workerKey);
     if (handle != null) {
       Process ffmpeg = handle.getFfmpegProcess();

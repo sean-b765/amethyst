@@ -12,10 +12,6 @@ import dev.amethyst.app.tv.repository.TvSeasonRepository;
 @Service
 public class TvSeasonService
     extends AbstractCrudService<TvSeason, String, TvSeasonRepository> {
-  protected TvSeasonService(TvSeasonRepository repository) {
-    super(repository);
-  }
-
   public Optional<TvSeason> findExternalById(String externalId) {
     return this.repository.findByExternalId(externalId);
   }

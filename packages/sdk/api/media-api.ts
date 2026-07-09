@@ -34,9 +34,9 @@ export const MediaApiAxiosParamCreator = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        create2: async (media: Media, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        create3: async (media: Media, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'media' is not null or undefined
-            assertParamExists('create2', 'media', media)
+            assertParamExists('create3', 'media', media)
             const localVarPath = `/api/media`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -72,9 +72,9 @@ export const MediaApiAxiosParamCreator = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteById2: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deleteById3: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('deleteById2', 'id', id)
+            assertParamExists('deleteById3', 'id', id)
             const localVarPath = `/api/media/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -108,9 +108,9 @@ export const MediaApiAxiosParamCreator = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteByIds2: async (requestBody: Array<string>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deleteByIds3: async (requestBody: Array<string>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'requestBody' is not null or undefined
-            assertParamExists('deleteByIds2', 'requestBody', requestBody)
+            assertParamExists('deleteByIds3', 'requestBody', requestBody)
             const localVarPath = `/api/media`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -145,7 +145,7 @@ export const MediaApiAxiosParamCreator = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        findAll2: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        findAll3: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/media`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -178,9 +178,9 @@ export const MediaApiAxiosParamCreator = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        findById2: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        findById3: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('findById2', 'id', id)
+            assertParamExists('findById3', 'id', id)
             const localVarPath = `/api/media/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -214,9 +214,9 @@ export const MediaApiAxiosParamCreator = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        findByIds2: async (requestBody: Array<string>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        findByIds3: async (requestBody: Array<string>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'requestBody' is not null or undefined
-            assertParamExists('findByIds2', 'requestBody', requestBody)
+            assertParamExists('findByIds3', 'requestBody', requestBody)
             const localVarPath = `/api/media/fetch`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -252,9 +252,9 @@ export const MediaApiAxiosParamCreator = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        upsert2: async (media: Media, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        upsert3: async (media: Media, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'media' is not null or undefined
-            assertParamExists('upsert2', 'media', media)
+            assertParamExists('upsert3', 'media', media)
             const localVarPath = `/api/media`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -299,10 +299,10 @@ export const MediaApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async create2(media: Media, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Media>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.create2(media, options);
+        async create3(media: Media, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Media>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.create3(media, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['MediaApi.create2']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['MediaApi.create3']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -311,10 +311,10 @@ export const MediaApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteById2(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteById2(id, options);
+        async deleteById3(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteById3(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['MediaApi.deleteById2']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['MediaApi.deleteById3']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -323,10 +323,10 @@ export const MediaApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteByIds2(requestBody: Array<string>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteByIds2(requestBody, options);
+        async deleteByIds3(requestBody: Array<string>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteByIds3(requestBody, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['MediaApi.deleteByIds2']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['MediaApi.deleteByIds3']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -334,10 +334,10 @@ export const MediaApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async findAll2(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Media>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.findAll2(options);
+        async findAll3(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Media>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.findAll3(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['MediaApi.findAll2']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['MediaApi.findAll3']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -346,10 +346,10 @@ export const MediaApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async findById2(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Media>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.findById2(id, options);
+        async findById3(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Media>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.findById3(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['MediaApi.findById2']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['MediaApi.findById3']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -358,10 +358,10 @@ export const MediaApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async findByIds2(requestBody: Array<string>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Media>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.findByIds2(requestBody, options);
+        async findByIds3(requestBody: Array<string>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Media>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.findByIds3(requestBody, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['MediaApi.findByIds2']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['MediaApi.findByIds3']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -370,10 +370,10 @@ export const MediaApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async upsert2(media: Media, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Media>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.upsert2(media, options);
+        async upsert3(media: Media, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Media>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.upsert3(media, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['MediaApi.upsert2']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['MediaApi.upsert3']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -391,8 +391,8 @@ export const MediaApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        create2(media: Media, options?: RawAxiosRequestConfig): AxiosPromise<Media> {
-            return localVarFp.create2(media, options).then((request) => request(axios, basePath));
+        create3(media: Media, options?: RawAxiosRequestConfig): AxiosPromise<Media> {
+            return localVarFp.create3(media, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -400,8 +400,8 @@ export const MediaApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteById2(id: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
-            return localVarFp.deleteById2(id, options).then((request) => request(axios, basePath));
+        deleteById3(id: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.deleteById3(id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -409,16 +409,16 @@ export const MediaApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteByIds2(requestBody: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<object> {
-            return localVarFp.deleteByIds2(requestBody, options).then((request) => request(axios, basePath));
+        deleteByIds3(requestBody: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.deleteByIds3(requestBody, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        findAll2(options?: RawAxiosRequestConfig): AxiosPromise<Array<Media>> {
-            return localVarFp.findAll2(options).then((request) => request(axios, basePath));
+        findAll3(options?: RawAxiosRequestConfig): AxiosPromise<Array<Media>> {
+            return localVarFp.findAll3(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -426,8 +426,8 @@ export const MediaApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        findById2(id: string, options?: RawAxiosRequestConfig): AxiosPromise<Media> {
-            return localVarFp.findById2(id, options).then((request) => request(axios, basePath));
+        findById3(id: string, options?: RawAxiosRequestConfig): AxiosPromise<Media> {
+            return localVarFp.findById3(id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -435,8 +435,8 @@ export const MediaApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        findByIds2(requestBody: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<Array<Media>> {
-            return localVarFp.findByIds2(requestBody, options).then((request) => request(axios, basePath));
+        findByIds3(requestBody: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<Array<Media>> {
+            return localVarFp.findByIds3(requestBody, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -444,8 +444,8 @@ export const MediaApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        upsert2(media: Media, options?: RawAxiosRequestConfig): AxiosPromise<Media> {
-            return localVarFp.upsert2(media, options).then((request) => request(axios, basePath));
+        upsert3(media: Media, options?: RawAxiosRequestConfig): AxiosPromise<Media> {
+            return localVarFp.upsert3(media, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -460,8 +460,8 @@ export class MediaApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public create2(media: Media, options?: RawAxiosRequestConfig) {
-        return MediaApiFp(this.configuration).create2(media, options).then((request) => request(this.axios, this.basePath));
+    public create3(media: Media, options?: RawAxiosRequestConfig) {
+        return MediaApiFp(this.configuration).create3(media, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -470,8 +470,8 @@ export class MediaApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public deleteById2(id: string, options?: RawAxiosRequestConfig) {
-        return MediaApiFp(this.configuration).deleteById2(id, options).then((request) => request(this.axios, this.basePath));
+    public deleteById3(id: string, options?: RawAxiosRequestConfig) {
+        return MediaApiFp(this.configuration).deleteById3(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -480,8 +480,8 @@ export class MediaApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public deleteByIds2(requestBody: Array<string>, options?: RawAxiosRequestConfig) {
-        return MediaApiFp(this.configuration).deleteByIds2(requestBody, options).then((request) => request(this.axios, this.basePath));
+    public deleteByIds3(requestBody: Array<string>, options?: RawAxiosRequestConfig) {
+        return MediaApiFp(this.configuration).deleteByIds3(requestBody, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -489,8 +489,8 @@ export class MediaApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public findAll2(options?: RawAxiosRequestConfig) {
-        return MediaApiFp(this.configuration).findAll2(options).then((request) => request(this.axios, this.basePath));
+    public findAll3(options?: RawAxiosRequestConfig) {
+        return MediaApiFp(this.configuration).findAll3(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -499,8 +499,8 @@ export class MediaApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public findById2(id: string, options?: RawAxiosRequestConfig) {
-        return MediaApiFp(this.configuration).findById2(id, options).then((request) => request(this.axios, this.basePath));
+    public findById3(id: string, options?: RawAxiosRequestConfig) {
+        return MediaApiFp(this.configuration).findById3(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -509,8 +509,8 @@ export class MediaApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public findByIds2(requestBody: Array<string>, options?: RawAxiosRequestConfig) {
-        return MediaApiFp(this.configuration).findByIds2(requestBody, options).then((request) => request(this.axios, this.basePath));
+    public findByIds3(requestBody: Array<string>, options?: RawAxiosRequestConfig) {
+        return MediaApiFp(this.configuration).findByIds3(requestBody, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -519,8 +519,8 @@ export class MediaApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public upsert2(media: Media, options?: RawAxiosRequestConfig) {
-        return MediaApiFp(this.configuration).upsert2(media, options).then((request) => request(this.axios, this.basePath));
+    public upsert3(media: Media, options?: RawAxiosRequestConfig) {
+        return MediaApiFp(this.configuration).upsert3(media, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

@@ -22,9 +22,12 @@ import java.io.File;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 public class MediaService extends AbstractCrudService<Media, String, MediaRepository> {
+  private static Logger logger = Logger.getLogger(MediaService.class.getName());
+
   @Autowired
   private MediaMetadataService mediaMetadataService;
   @Autowired
@@ -33,10 +36,6 @@ public class MediaService extends AbstractCrudService<Media, String, MediaReposi
   private TvSeriesService tvSeriesService;
   @Autowired
   private TvSeasonService tvSeasonService;
-
-  protected MediaService(MediaRepository repository) {
-    super(repository);
-  }
 
   public Optional<Media> findByPath(String absolutePath) {
     return this.repository.findByPath(absolutePath);
@@ -70,6 +69,10 @@ public class MediaService extends AbstractCrudService<Media, String, MediaReposi
     Media media = this.findById(mediaId).orElseThrow();
 
     MediaMetadata mediaMetadata = this.mediaMetadataService.createMetadata(media);
+    if (mediaMetadata == null) {
+      logger.warning(media.getId() + " could not create metadata");
+      return;
+    }
     mediaMetadata.setMedia(media);
     media.setMetadata(mediaMetadata);
     this.save(media);

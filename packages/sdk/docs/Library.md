@@ -9,6 +9,7 @@ Name | Type | Description | Notes
 **createdAt** | **string** |  | [default to undefined]
 **updatedAt** | **string** |  | [optional] [default to undefined]
 **name** | **string** |  | [default to undefined]
+**slug** | **string** |  | [default to undefined]
 **path** | **string** |  | [default to undefined]
 **type** | **string** |  | [default to undefined]
 **orderIndex** | **number** |  | [optional] [default to undefined]
@@ -23,6 +24,7 @@ const instance: Library = {
     createdAt,
     updatedAt,
     name,
+    slug,
     path,
     type,
     orderIndex,

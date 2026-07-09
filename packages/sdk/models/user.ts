@@ -25,9 +25,9 @@ export interface User {
     'username': string;
     'password': string;
     'authorities': Array<GrantedAuthority>;
-    'enabled'?: boolean;
     'credentialsNonExpired'?: boolean;
     'accountNonExpired'?: boolean;
     'accountNonLocked'?: boolean;
+    'enabled'?: boolean;
 }
 

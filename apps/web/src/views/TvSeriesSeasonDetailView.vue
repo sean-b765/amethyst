@@ -33,7 +33,9 @@ const season = computed(() => {
 })
 
 const episodes = computed(() => {
-  return season.value?.mediaItems ?? []
+  return (season.value?.mediaItems ?? []).sort(
+    (a, b) => (a.info?.episode || 0) - (b.info?.episode || 0),
+  )
 })
 </script>
 
@@ -94,6 +96,7 @@ const episodes = computed(() => {
           :thumbnail="episode.info?.thumbnail"
           :hover-thumbnail="episode.info?.banner"
           :release-date="episode.info?.releaseDate"
+          :episode="episode.info?.episode"
           :href="getEpisodeHref(episode)"
         />
       </template>

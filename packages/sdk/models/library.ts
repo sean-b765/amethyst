@@ -19,6 +19,7 @@ export interface Library {
     'createdAt': string;
     'updatedAt'?: string;
     'name': string;
+    'slug': string;
     'path': string;
     'type': LibraryTypeEnum;
     'orderIndex'?: number;

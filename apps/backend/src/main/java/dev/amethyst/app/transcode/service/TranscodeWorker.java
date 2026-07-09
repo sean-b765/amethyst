@@ -27,16 +27,21 @@ public class TranscodeWorker implements Runnable {
       Files.createDirectories(outputDirectory);
 
       String[] arguments = JobType.HLS.equals(this.transcodeJob.getType())
-          ? this.transcodeManager.getTranscodingService().getHlsArgs(this.transcodeJob, this.outputPath)
+          ? this.transcodeManager.getTranscodingService().getHlsArguments(this.transcodeJob, this.outputPath)
           : new String[] {};
 
       Process ffmpegProcess = this.transcodeManager.getFfmpegService().ffmpeg(this.outputPath, arguments);
       if (ffmpegProcess == null) {
-        return;
+        throw new IllegalStateException("FFMPEG process is invalid (null)");
       }
       this.transcodeManager.registerFfmpegProcess(ffmpegProcess);
       ffmpegProcess.waitFor();
-    } catch (IOException | InterruptedException ignored) {
+    } catch (IOException | InterruptedException ex) {
+      ex.printStackTrace();
+    } catch (IllegalStateException ex) {
+      ex.printStackTrace();
+    } catch (Exception ex) {
+      ex.printStackTrace();
     }
   }
 
